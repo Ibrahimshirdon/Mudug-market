@@ -1,0 +1,235 @@
+2025-12-05T17:28:25.039Z - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:81:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:54:23)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:157:11
+    at WriteStream.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\storage\disk.js:43:9)
+    at WriteStream.emit (node:events:531:35)
+
+2025-12-05T17:28:28.529Z - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:81:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:54:23)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:157:11
+    at WriteStream.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\storage\disk.js:43:9)
+    at WriteStream.emit (node:events:531:35)
+
+2025-12-05T17:28:39.065Z - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:81:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:54:23)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:157:11
+    at WriteStream.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\storage\disk.js:43:9)
+    at WriteStream.emit (node:events:531:35)
+
+2025-12-05T17:29:15.141Z - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:81:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:54:23)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:157:11
+    at WriteStream.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\storage\disk.js:43:9)
+    at WriteStream.emit (node:events:531:35)
+
+2025-12-05T17:42:53.019Z - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:81:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:73:23)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at Multipart.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:168:7)
+    at Multipart.emit (node:events:519:28)
+    at emitCloseNT (node:internal/streams/destroy:148:10)
+
+2025-12-05T17:43:03.622Z - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:81:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:73:23)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at Multipart.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:168:7)
+    at Multipart.emit (node:events:519:28)
+    at emitCloseNT (node:internal/streams/destroy:148:10)
+
+2025-12-05T17:43:09.866Z - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:81:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:73:23)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at Multipart.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:168:7)
+    at Multipart.emit (node:events:519:28)
+    at emitCloseNT (node:internal/streams/destroy:148:10)
+
+2025-12-05T17:49:37.319Z - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:81:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:73:23)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at Multipart.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:168:7)
+    at Multipart.emit (node:events:519:28)
+    at emitCloseNT (node:internal/streams/destroy:148:10)
+
+2025-12-05T17:49:42.877Z - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:81:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:73:23)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at Multipart.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:168:7)
+    at Multipart.emit (node:events:519:28)
+    at emitCloseNT (node:internal/streams/destroy:148:10)
+
+2025-12-05T17:52:21.489Z - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:88:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:73:23)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at Multipart.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:168:7)
+    at Multipart.emit (node:events:519:28)
+    at emitCloseNT (node:internal/streams/destroy:148:10)
+
+2025-12-05T17:52:33.281Z - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:88:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:73:23)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at Multipart.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:168:7)
+    at Multipart.emit (node:events:519:28)
+    at emitCloseNT (node:internal/streams/destroy:148:10)
+
+2025-12-05T17:54:14.263Z - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:88:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:73:23)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at Multipart.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:168:7)
+    at Multipart.emit (node:events:519:28)
+    at emitCloseNT (node:internal/streams/destroy:148:10)
+
+2025-12-05T17:54:17.986Z - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+Error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'condition = ?, category_id = ?, delivery_info = ?, delivery_fee = ?, is_black_fr' at line 1
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:88:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:73:23)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at Multipart.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:168:7)
+    at Multipart.emit (node:events:519:28)
+    at emitCloseNT (node:internal/streams/destroy:148:10)
+
+2025-12-06T11:58:58.584Z - Unknown column 'image_url' in 'field list'
+Error: Unknown column 'image_url' in 'field list'
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:136:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:96:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+2025-12-06T16:16:38.748Z - Unknown column 'image_url' in 'field list'
+Error: Unknown column 'image_url' in 'field list'
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.update (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:136:18)
+    at exports.updateProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:96:23)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+2025-12-06T16:20:55.100Z - Unknown column 'image_url' in 'field list'
+Error: Unknown column 'image_url' in 'field list'
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.create (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:31:35)
+    at exports.createProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:43:41)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:157:11
+    at WriteStream.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\storage\disk.js:43:9)
+    at WriteStream.emit (node:events:531:35)
+
+2025-12-06T16:20:58.573Z - Unknown column 'image_url' in 'field list'
+Error: Unknown column 'image_url' in 'field list'
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.create (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:31:35)
+    at exports.createProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:43:41)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:157:11
+    at WriteStream.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\storage\disk.js:43:9)
+    at WriteStream.emit (node:events:531:35)
+
+2025-12-06T16:20:59.221Z - Unknown column 'image_url' in 'field list'
+Error: Unknown column 'image_url' in 'field list'
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.create (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:31:35)
+    at exports.createProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:43:41)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:157:11
+    at WriteStream.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\storage\disk.js:43:9)
+    at WriteStream.emit (node:events:531:35)
+
+2025-12-06T16:21:51.643Z - Unknown column 'image_url' in 'field list'
+Error: Unknown column 'image_url' in 'field list'
+    at PromisePool.execute (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\mysql2\lib\promise\pool.js:54:22)
+    at Product.create (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\models\Product.js:31:35)
+    at exports.createProduct (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\controllers\productController.js:43:41)
+    at Layer.handle [as handle_request] (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\express\lib\router\route.js:149:13)
+    at done (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:47:7)
+    at indicateDone (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:51:68)
+    at C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\lib\make-middleware.js:157:11
+    at WriteStream.<anonymous> (C:\Users\ibra0\OneDrive\Desktop\Mudug Digital marketting\server\node_modules\multer\storage\disk.js:43:9)
+    at WriteStream.emit (node:events:531:35)
+
