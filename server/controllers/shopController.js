@@ -21,7 +21,7 @@ exports.createShop = async (req, res) => {
         };
 
         if (req.file) {
-            shopData.logo_url = `/uploads/${req.file.filename}`;
+            shopData.logo_url = req.file.path;
         }
 
         const shop = await Shop.create(shopData);
@@ -48,7 +48,7 @@ exports.updateShop = async (req, res) => {
         if (phone) shop.phone = phone;
 
         if (req.file) {
-            shop.logo_url = `/uploads/${req.file.filename}`;
+            shop.logo_url = req.file.path;
         }
 
         await shop.save();

@@ -30,7 +30,7 @@ exports.updateUserProfile = async (req, res) => {
             user.phone = req.body.phone || user.phone;
 
             if (req.file) {
-                user.profile_image = `/uploads/${req.file.filename}`;
+                user.profile_image = req.file.path;
             }
 
             const updatedUser = await user.save();
