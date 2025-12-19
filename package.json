@@ -1,0 +1,9 @@
+{
+    "name": "galkacyo-digital-root",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "start": "npm start --prefix server",
+        "build": "npm run build --prefix client || echo 'No build needed'"
+    }
+}
