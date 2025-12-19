@@ -2,8 +2,12 @@
     "name": "galkacyo-digital-root",
     "version": "1.0.0",
     "private": true,
+    "workspaces": [
+        "server",
+        "client"
+    ],
     "scripts": {
-        "start": "npm start --prefix server",
-        "build": "npm run build --prefix client || echo 'No build needed'"
+        "start": "npm start -w server",
+        "build": "npm install -w server && (npm run build -w client || echo 'No build needed')"
     }
 }
