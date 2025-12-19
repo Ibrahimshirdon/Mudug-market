@@ -21,6 +21,9 @@ CREATE TABLE IF NOT EXISTS users (
     role ENUM('buyer', 'seller', 'admin') DEFAULT 'buyer',
     reset_password_token VARCHAR(255),
     reset_password_expires DATETIME,
+    otp_code VARCHAR(6),
+    otp_expires_at DATETIME,
+    is_verified BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -38,6 +41,7 @@ CREATE TABLE IF NOT EXISTS shops (
     subscription_status ENUM('active', 'expired') DEFAULT 'active',
     subscription_expiry DATE,
     balance DECIMAL(10, 2) DEFAULT 0.00,
+    rejection_reason TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
