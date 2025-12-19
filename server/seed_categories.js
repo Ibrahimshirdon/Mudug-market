@@ -1,20 +1,6 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+// Replaced Mongoose version with MySQL version
+const db = require('./config/db');
 const Category = require('./models/Category');
-
-// Load env vars
-dotenv.config();
-
-// Connect to MongoDB
-const connectDB = async () => {
-    try {
-        await mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/mudug_market');
-        console.log('✅ MongoDB Connected for Seeding');
-    } catch (error) {
-        console.error(`❌ MongoDB Connection Error: ${error.message}`);
-        process.exit(1);
-    }
-};
 
 const categories = [
     { name: 'Electronics', icon: '📱' },
@@ -28,16 +14,14 @@ const categories = [
 ];
 
 const seedCategories = async () => {
-    await connectDB();
-
     try {
         console.log('🌱 Seeding categories...');
 
         for (const category of categories) {
-            // Check if category exists
-            const existingCategory = await Category.findOne({ name: category.name });
+            // Basic existing check
+            const [existing] = await db.execute('SELECT * FROM categories WHERE name = ?', [category.name]);
 
-            if (!existingCategory) {
+            if (existing.length === 0) {
                 await Category.create(category);
                 console.log(`✅ Inserted category: ${category.name}`);
             } else {

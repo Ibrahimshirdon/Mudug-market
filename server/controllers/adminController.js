@@ -9,7 +9,7 @@ const Product = require('../models/Product');
 
 exports.getTransactions = async (req, res) => {
     try {
-        const transactions = await Transaction.find().sort({ created_at: -1 }).populate('shop_id', 'name');
+        const transactions = await Transaction.find();
         res.json(transactions);
     } catch (error) {
         console.error(error);
@@ -77,7 +77,7 @@ exports.getAnalytics = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.find().select('-password').sort({ created_at: -1 });
+        const users = await User.find();
         res.json(users);
     } catch (error) {
         console.error(error);
@@ -104,7 +104,7 @@ exports.deleteUser = async (req, res) => {
 
 exports.getLogs = async (req, res) => {
     try {
-        const logs = await ActivityLog.find().sort({ created_at: -1 }).populate('user_id', 'name email');
+        const logs = await ActivityLog.find();
         res.json(logs);
     } catch (error) {
         console.error(error);

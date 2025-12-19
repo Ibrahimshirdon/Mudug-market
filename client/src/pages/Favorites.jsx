@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import API_URL from '../api.config';
 import AuthContext from '../context/AuthContext';
 import ProductCard from '../components/ProductCard';
 
@@ -15,7 +16,7 @@ const Favorites = () => {
                     const config = {
                         headers: { Authorization: `Bearer ${user.token}` }
                     };
-                    const { data } = await axios.get('/api/favorites', config);
+                    const { data } = await axios.get(`${API_URL}/api/favorites`, config);
                     setFavorites(data);
                 } catch (error) {
                     console.error(error);

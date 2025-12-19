@@ -22,11 +22,7 @@ exports.toggleFavorite = async (req, res) => {
 
 exports.getFavorites = async (req, res) => {
     try {
-        const favorites = await Favorite.find({ user_id: req.user.id })
-            .populate({
-                path: 'product_id',
-                populate: { path: 'shop_id', select: 'name logo_url' }
-            });
+        const favorites = await Favorite.find({ user_id: req.user.id });
 
         // Filter out null products (in case product was deleted)
         const validFavorites = favorites.filter(f => f.product_id);

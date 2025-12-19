@@ -1,24 +1,27 @@
-const mongoose = require('mongoose');
+const db = require('../config/db');
 
-const transactionSchema = new mongoose.Schema({
-    shop_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Shop',
-        required: true
-    },
-    amount: {
-        type: Number,
-        required: true
-    },
-    type: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String
+class Transaction {
+    static async create(data) {
+        const { shop_id, amount, type, description } = data;
+        await db.execute(
+            'INSERT INTO transactions (shop_id, amount, type, description) VALUES (?, ?, ?, ?)',
+            [shop_id, amount, type, description]
+        );
     }
-}, {
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
-});
 
-module.exports = mongoose.model('Transaction', transactionSchema);
+    static async find(query = {}) {
+        let sql = `
+            SELECT t.*, s.name as shop_name
+            FROM transactions t
+            LEFT JOIN shops s ON t.shop_id = s.id
+            ORDER BY t.created_at DESC
+        `;
+        const [rows] = await db.execute(sql);
+        return rows.map(r => ({
+            ...r,
+            shop_id: { id: r.shop_id, name: r.shop_name }
+        }));
+    }
+}
+
+module.exports = Transaction;

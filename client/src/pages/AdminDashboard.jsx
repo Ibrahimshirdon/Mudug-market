@@ -1,8 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import API_URL from '../api.config';
 import AuthContext from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FaStore, FaUsers, FaClipboardList, FaChartLine, FaHistory, FaExternalLinkAlt, FaCheck, FaTimes, FaTrash, FaBan, FaUnlock, FaMoneyBillWave } from 'react-icons/fa';
+import { toast } from 'react-hot-toast';
 
 const AdminDashboard = () => {
     const { user, loading: authLoading } = useContext(AuthContext);
@@ -35,13 +37,13 @@ const AdminDashboard = () => {
                 };
 
                 const [analyticsRes, usersRes, pendingShopsRes, allShopsRes, reportsRes, logsRes, transactionsRes] = await Promise.all([
-                    axios.get('/api/admin/analytics', config),
-                    axios.get('/api/admin/users', config),
-                    axios.get('/api/shops?status=pending', config),
-                    axios.get('/api/shops', config),
-                    axios.get('/api/reports', config),
-                    axios.get('/api/admin/logs', config),
-                    axios.get('/api/admin/transactions', config)
+                    axios.get(`${API_URL}/api/admin/analytics`, config),
+                    axios.get(`${API_URL}/api/admin/users`, config),
+                    axios.get(`${API_URL}/api/shops?status=pending`, config),
+                    axios.get(`${API_URL}/api/shops`, config),
+                    axios.get(`${API_URL}/api/reports`, config),
+                    axios.get(`${API_URL}/api/admin/logs`, config),
+                    axios.get(`${API_URL}/api/admin/transactions`, config)
                 ]);
 
                 setAnalytics(analyticsRes.data);
@@ -66,12 +68,12 @@ const AdminDashboard = () => {
     const handleApproveShop = async (shopId) => {
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put(`/api/shops/${shopId}/status`, { status: 'approved' }, config);
+            await axios.put(`${API_URL}/api/shops/${shopId}/status`, { status: 'approved' }, config);
             setPendingShops(pendingShops.filter(s => s.id !== shopId));
             setAllShops(allShops.map(s => s.id === shopId ? { ...s, status: 'approved' } : s));
-            alert('Shop approved successfully');
+            toast.success('Shop approved successfully');
         } catch (error) {
-            alert('Error approving shop');
+            toast.error('Error approving shop');
         }
     };
 
@@ -79,12 +81,12 @@ const AdminDashboard = () => {
         if (!window.confirm('Are you sure you want to reject this shop?')) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put(`/api/shops/${shopId}/status`, { status: 'rejected' }, config);
+            await axios.put(`${API_URL}/api/shops/${shopId}/status`, { status: 'rejected' }, config);
             setPendingShops(pendingShops.filter(s => s.id !== shopId));
             setAllShops(allShops.map(s => s.id === shopId ? { ...s, status: 'rejected' } : s));
-            alert('Shop rejected');
+            toast.success('Shop rejected');
         } catch (error) {
-            alert('Error rejecting shop');
+            toast.error('Error rejecting shop');
         }
     };
 
@@ -92,11 +94,11 @@ const AdminDashboard = () => {
         if (!window.confirm('Are you sure you want to deactivate this shop?')) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put(`/api/admin/shops/${shopId}/deactivate`, {}, config);
+            await axios.put(`${API_URL}/api/admin/shops/${shopId}/deactivate`, {}, config);
             setAllShops(allShops.map(s => s.id === shopId ? { ...s, status: 'deactivated' } : s));
-            alert('Shop deactivated successfully');
+            toast.success('Shop deactivated successfully');
         } catch (error) {
-            alert('Error deactivating shop');
+            toast.error('Error deactivating shop');
         }
     };
 
@@ -104,22 +106,38 @@ const AdminDashboard = () => {
         if (!window.confirm('Are you sure you want to activate this shop?')) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put(`/api/admin/shops/${shopId}/activate`, {}, config);
+            await axios.put(`${API_URL}/api/admin/shops/${shopId}/activate`, {}, config);
             setAllShops(allShops.map(s => s.id === shopId ? { ...s, status: 'approved' } : s));
-            alert('Shop activated successfully');
+            toast.success('Shop activated successfully');
         } catch (error) {
-            alert('Error activating shop');
+            toast.error('Error activating shop');
+        }
+    };
+
+    const handleDeleteShop = async (shopId) => {
+        if (!window.confirm('Are you sure you want to delete this shop? This action cannot be undone.')) return;
+        try {
+            const config = { headers: { Authorization: `Bearer ${user.token}` } };
+            // Use the new admin delete route
+            await axios.delete(`${API_URL}/api/shops/${shopId}`, config);
+
+            // Immediately update the UI
+            setAllShops(allShops.filter(s => s.id !== shopId));
+            toast.success('Shop deleted successfully');
+        } catch (error) {
+            console.error(error);
+            toast.error('Error deleting shop');
         }
     };
 
     const handleReportStatus = async (reportId, status) => {
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put(`/api/reports/${reportId}/status`, { status }, config);
+            await axios.put(`${API_URL}/api/reports/${reportId}/status`, { status }, config);
             setReports(reports.map(r => r.id === reportId ? { ...r, status } : r));
-            alert(`Report marked as ${status}`);
+            toast.success(`Report marked as ${status}`);
         } catch (error) {
-            alert('Error updating report status');
+            toast.error('Error updating report status');
         }
     };
 
@@ -127,11 +145,11 @@ const AdminDashboard = () => {
         if (!window.confirm('Are you sure you want to delete this user?')) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.delete(`/api/admin/users/${userId}`, config);
+            await axios.delete(`${API_URL}/api/admin/users/${userId}`, config);
             setUsers(users.filter(u => u.id !== userId));
-            alert('User deleted successfully');
+            toast.success('User deleted successfully');
         } catch (error) {
-            alert('Error deleting user');
+            toast.error('Error deleting user');
         }
     };
 
@@ -142,16 +160,16 @@ const AdminDashboard = () => {
                 const config = {
                     headers: { Authorization: `Bearer ${user.token}` }
                 };
-                await axios.post(`/api/admin/shops/${shopId}/balance`, { amount }, config);
-                alert('Balance updated successfully');
+                await axios.post(`${API_URL}/api/admin/shops/${shopId}/balance`, { amount }, config);
+                toast.success('Balance updated successfully');
                 // Refresh Data
-                const shopsRes = await axios.get('/api/shops', config);
-                const transRes = await axios.get('/api/admin/transactions', config);
+                const shopsRes = await axios.get(`${API_URL}/api/shops`, config);
+                const transRes = await axios.get(`${API_URL}/api/admin/transactions`, config);
                 setAllShops(shopsRes.data);
                 setTransactions(transRes.data);
             } catch (error) {
                 console.error(error);
-                alert('Failed to update balance');
+                toast.error('Failed to update balance');
             }
         }
     };
@@ -174,69 +192,77 @@ const AdminDashboard = () => {
         s.owner_name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const NavItem = ({ id, icon: Icon, label, badge }) => (
+        <button
+            onClick={() => setActiveTab(id)}
+            className={`w-full flex items-center justify-between px-4 py-3.5 rounded-xl transition-all duration-200 group ${activeTab === id
+                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/20 translate-x-1'
+                : 'text-gray-400 hover:bg-white/5 hover:text-white'
+                }`}
+        >
+            <div className="flex items-center gap-3">
+                <Icon className={`text-lg ${activeTab === id ? 'text-indigo-200' : 'text-gray-500 group-hover:text-indigo-400'}`} />
+                <span className="font-medium">{label}</span>
+            </div>
+            {badge > 0 && (
+                <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${activeTab === id ? 'bg-indigo-500 text-white' : 'bg-indigo-500/10 text-indigo-400'
+                    }`}>
+                    {badge}
+                </span>
+            )}
+        </button>
+    );
+
     return (
-        <div className="min-h-screen bg-gray-50 flex">
+        <div className="min-h-screen bg-gray-50 flex font-sans text-gray-900">
             {/* Sidebar / Navigation */}
-            <aside className="w-64 bg-white border-r border-gray-200 hidden md:block fixed h-full z-10">
-                <div className="p-6 border-b border-gray-100">
-                    <h1 className="text-2xl font-bold text-primary-600 flex items-center gap-2">
-                        <FaChartLine /> Admin
-                    </h1>
+            <aside className="w-72 bg-gray-900 text-white hidden md:flex flex-col fixed h-full shadow-2xl z-20 transition-all duration-300">
+                <div className="p-8 border-b border-gray-800 flex items-center gap-3">
+                    <div className="p-2 bg-indigo-600 rounded-lg shadow-lg shadow-indigo-500/30">
+                        <FaChartLine className="text-xl" />
+                    </div>
+                    <h1 className="text-2xl font-bold tracking-tight">Admin<span className="text-indigo-400">Panel</span></h1>
                 </div>
-                <nav className="p-4 space-y-2">
-                    <button
-                        onClick={() => setActiveTab('overview')}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'overview' ? 'bg-primary-50 text-primary-600 font-bold shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`}
-                    >
-                        <FaChartLine /> Overview
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('shops')}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'shops' ? 'bg-primary-50 text-primary-600 font-bold shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`}
-                    >
-                        <FaStore /> Shops Management
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('finance')}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'finance' ? 'bg-primary-50 text-primary-600 font-bold shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`}
-                    >
-                        <FaMoneyBillWave /> Finances
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('reports')}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'reports' ? 'bg-primary-50 text-primary-600 font-bold shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`}
-                    >
-                        <FaClipboardList /> Reports Center
-                        {reports.filter(r => r.status === 'pending').length > 0 && (
-                            <span className="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                                {reports.filter(r => r.status === 'pending').length}
-                            </span>
-                        )}
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('users')}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'users' ? 'bg-primary-50 text-primary-600 font-bold shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`}
-                    >
-                        <FaUsers /> Users
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('logs')}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'logs' ? 'bg-primary-50 text-primary-600 font-bold shadow-sm' : 'text-gray-600 hover:bg-gray-50'}`}
-                    >
-                        <FaHistory /> Activity Logs
-                    </button>
+
+                <nav className="flex-1 p-6 space-y-2 overflow-y-auto custom-scrollbar">
+                    <p className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Main Menu</p>
+                    <NavItem id="overview" icon={FaChartLine} label="Overview" />
+                    <NavItem id="shops" icon={FaStore} label="Shops Management" badge={pendingShops.length > 0 ? pendingShops.length : 0} />
+                    <NavItem id="finance" icon={FaMoneyBillWave} label="Finances" />
+
+                    <p className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mt-6 mb-2">Support & Logs</p>
+                    <NavItem id="reports" icon={FaClipboardList} label="Reports Center" badge={reports.filter(r => r.status === 'pending').length} />
+                    <NavItem id="users" icon={FaUsers} label="User Directory" />
+                    <NavItem id="logs" icon={FaHistory} label="Activity Logs" />
                 </nav>
+
+                <div className="p-6 border-t border-gray-800 bg-gray-900/50">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold shadow-lg">
+                            {user?.name?.charAt(0) || 'A'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-sm truncate">{user?.name}</p>
+                            <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+                        </div>
+                    </div>
+                </div>
             </aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 md:ml-64 p-8">
+            <main className="flex-1 md:ml-72 p-8 lg:p-12 transition-all duration-300">
                 {/* Header for Mobile */}
-                <div className="md:hidden mb-6 flex justify-between items-center bg-white p-4 rounded-xl shadow-sm">
-                    <h1 className="text-xl font-bold">Admin Panel</h1>
+                <div className="md:hidden mb-8 flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                    <div className="flex items-center gap-2">
+                        <div className="p-2 bg-indigo-600 rounded-lg text-white">
+                            <FaChartLine />
+                        </div>
+                        <h1 className="text-xl font-bold text-gray-900">AdminPanel</h1>
+                    </div>
                     <select
                         value={activeTab}
                         onChange={(e) => setActiveTab(e.target.value)}
-                        className="border rounded p-2"
+                        className="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block p-2.5 outline-none font-medium"
                     >
                         <option value="overview">Overview</option>
                         <option value="shops">Shops</option>
@@ -248,38 +274,83 @@ const AdminDashboard = () => {
                 </div>
 
                 {activeTab === 'overview' && (
-                    <div className="space-y-6 animate-fadeIn">
-                        <h2 className="text-2xl font-bold text-gray-800">Dashboard Overview</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between h-32 relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                    <FaUsers className="text-6xl text-blue-500" />
+                    <div className="space-y-8 animate-fadeIn">
+                        <div>
+                            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Dashboard Overview</h2>
+                            <p className="text-gray-500 mt-1">Welcome back, {user.name}. Here's what's happening today.</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {/* Users Card */}
+                            <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-xl shadow-blue-500/20 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-all duration-500 scale-110 group-hover:scale-125">
+                                    <FaUsers className="text-8xl" />
                                 </div>
-                                <h3 className="text-gray-500 font-medium">Total Users</h3>
-                                <p className="text-4xl font-bold text-gray-800">{analytics?.totalUsers || 0}</p>
-                                <div className="text-xs text-green-500 font-semibold bg-green-50 px-2 py-1 rounded w-max">Active Community</div>
+                                <div className="relative z-10">
+                                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center mb-4">
+                                        <FaUsers className="text-2xl" />
+                                    </div>
+                                    <h3 className="text-blue-100 font-medium text-sm uppercase tracking-wider">Total Users</h3>
+                                    <div className="flex items-end gap-2 mt-1">
+                                        <p className="text-4xl font-bold">{analytics?.totalUsers || 0}</p>
+                                        <span className="text-sm bg-white/20 px-2 py-0.5 rounded text-blue-50 mb-1 backdrop-blur-sm">+12%</span>
+                                    </div>
+                                    <p className="text-blue-100/70 text-sm mt-4">Active community members</p>
+                                </div>
                             </div>
-                            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between h-32 relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                    <FaStore className="text-6xl text-purple-500" />
+
+                            {/* Shops Card */}
+                            <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 text-white shadow-xl shadow-purple-500/20 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-all duration-500 scale-110 group-hover:scale-125">
+                                    <FaStore className="text-8xl" />
                                 </div>
-                                <h3 className="text-gray-500 font-medium">Total Shops</h3>
-                                <p className="text-4xl font-bold text-gray-800">{analytics?.totalShops || 0}</p>
-                                <div className="text-xs text-purple-500 font-semibold bg-purple-50 px-2 py-1 rounded w-max">Marketplace Growth</div>
+                                <div className="relative z-10">
+                                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center mb-4">
+                                        <FaStore className="text-2xl" />
+                                    </div>
+                                    <h3 className="text-purple-100 font-medium text-sm uppercase tracking-wider">Total Shops</h3>
+                                    <div className="flex items-end gap-2 mt-1">
+                                        <p className="text-4xl font-bold">{analytics?.totalShops || 0}</p>
+                                        <span className="text-sm bg-white/20 px-2 py-0.5 rounded text-purple-50 mb-1 backdrop-blur-sm">+5%</span>
+                                    </div>
+                                    <p className="text-purple-100/70 text-sm mt-4">Registered vendors</p>
+                                </div>
                             </div>
-                            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between h-32 relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                    <FaClipboardList className="text-6xl text-orange-500" />
+
+                            {/* Products Card */}
+                            <div className="bg-gradient-to-br from-orange-400 to-pink-500 rounded-2xl p-6 text-white shadow-xl shadow-orange-500/20 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-all duration-500 scale-110 group-hover:scale-125">
+                                    <FaClipboardList className="text-8xl" />
                                 </div>
-                                <h3 className="text-gray-500 font-medium">Total Products</h3>
-                                <p className="text-4xl font-bold text-gray-800">{analytics?.totalProducts || 0}</p>
+                                <div className="relative z-10">
+                                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center mb-4">
+                                        <FaClipboardList className="text-2xl" />
+                                    </div>
+                                    <h3 className="text-orange-100 font-medium text-sm uppercase tracking-wider">Total Products</h3>
+                                    <div className="flex items-end gap-2 mt-1">
+                                        <p className="text-4xl font-bold">{analytics?.totalProducts || 0}</p>
+                                        <span className="text-sm bg-white/20 px-2 py-0.5 rounded text-orange-50 mb-1 backdrop-blur-sm">+8%</span>
+                                    </div>
+                                    <p className="text-orange-100/70 text-sm mt-4">Items in catalog</p>
+                                </div>
                             </div>
-                            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between h-32 relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                                    <FaExternalLinkAlt className="text-6xl text-green-500" />
+
+                            {/* Clicks Card */}
+                            <div className="bg-gradient-to-br from-emerald-400 to-teal-600 rounded-2xl p-6 text-white shadow-xl shadow-teal-500/20 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-all duration-500 scale-110 group-hover:scale-125">
+                                    <FaExternalLinkAlt className="text-8xl" />
                                 </div>
-                                <h3 className="text-gray-500 font-medium">Link Clicks</h3>
-                                <p className="text-4xl font-bold text-gray-800">{analytics?.totalClicks || 0}</p>
+                                <div className="relative z-10">
+                                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-lg flex items-center justify-center mb-4">
+                                        <FaExternalLinkAlt className="text-2xl" />
+                                    </div>
+                                    <h3 className="text-teal-100 font-medium text-sm uppercase tracking-wider">Engagement</h3>
+                                    <div className="flex items-end gap-2 mt-1">
+                                        <p className="text-4xl font-bold">{analytics?.totalClicks || 0}</p>
+                                        <span className="text-sm bg-white/20 px-2 py-0.5 rounded text-teal-50 mb-1 backdrop-blur-sm">Clicks</span>
+                                    </div>
+                                    <p className="text-teal-100/70 text-sm mt-4">Total product views</p>
+                                </div>
                             </div>
                         </div>
 
@@ -349,93 +420,109 @@ const AdminDashboard = () => {
 
                 {activeTab === 'shops' && (
                     <div className="space-y-6 animate-fadeIn">
-                        <div className="flex justify-between items-center">
-                            <h2 className="text-2xl font-bold text-gray-800">Shops Management</h2>
-                            <div className="relative w-64">
+                        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-900">Shops Management</h2>
+                                <p className="text-gray-500 text-sm">Monitor and manage vendor stores</p>
+                            </div>
+                            <div className="relative w-full md:w-72">
                                 <input
                                     type="text"
                                     placeholder="Search shops..."
-                                    className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500/20 outline-none"
+                                    className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none shadow-sm transition-all"
                                     value={searchTerm}
                                     onChange={e => setSearchTerm(e.target.value)}
                                 />
-                                <FaStore className="absolute left-3 top-3 text-gray-400" />
+                                <FaStore className="absolute left-3 top-3.5 text-gray-400" />
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                            <table className="w-full text-left">
-                                <thead className="bg-gray-50 text-gray-600 text-sm uppercase">
-                                    <tr>
-                                        <th className="px-6 py-4 font-semibold">Shop Detail</th>
-                                        <th className="px-6 py-4 font-semibold">Status</th>
-                                        <th className="px-6 py-4 font-semibold">Balance</th>
-                                        <th className="px-6 py-4 font-semibold">Strikes</th>
-                                        <th className="px-6 py-4 font-semibold">Link</th>
-                                        <th className="px-6 py-4 font-semibold text-right">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {filteredShops.map(shop => (
-                                        <tr key={shop.id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="px-6 py-4">
-                                                <div className="flex items-center gap-3">
-                                                    <img src={shop.logo_url?.startsWith('http') ? shop.logo_url : `${shop.logo_url}` || 'https://via.placeholder.com/50'} className="w-10 h-10 rounded-full object-cover border border-gray-200" onError={(e) => e.target.src = 'https://via.placeholder.com/50'} />
-                                                    <div>
-                                                        <div className="font-bold text-gray-900">{shop.name}</div>
-                                                        <div className="text-xs text-gray-500">{shop.owner_name}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${shop.status === 'approved' ? 'bg-green-100 text-green-700' :
-                                                    shop.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                                                        shop.status === 'deactivated' ? 'bg-gray-100 text-gray-600' :
-                                                            'bg-red-100 text-red-700'
-                                                    }`}>
-                                                    {shop.status}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 font-mono text-gray-700 font-medium">
-                                                ${Number(shop.balance || 0).toFixed(2)}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {shop.strikes > 0 ? (
-                                                    <span className="bg-red-100 text-red-700 px-2 py-1 rounded-md font-bold text-xs">{shop.strikes}</span>
-                                                ) : <span className="text-gray-400">0</span>}
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                {shop.status === 'approved' ? (
-                                                    <a href={`/shop/${shop.id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-primary-600 hover:text-primary-800 text-sm font-medium">
-                                                        Visit Shop <FaExternalLinkAlt className="text-xs" />
-                                                    </a>
-                                                ) : <span className="text-gray-400 text-sm">-</span>}
-                                            </td>
-                                            <td className="px-6 py-4 text-right flex justify-end gap-2">
-                                                {shop.status === 'pending' && (
-                                                    <>
-                                                        <button onClick={() => handleApproveShop(shop.id)} className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200" title="Approve"><FaCheck /></button>
-                                                        <button onClick={() => handleRejectShop(shop.id)} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200" title="Reject"><FaTimes /></button>
-                                                    </>
-                                                )}
-                                                {shop.status === 'approved' && (
-                                                    <>
-                                                        <button onClick={() => handleAddFunds(shop.id)} className="p-2 text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors" title="Add Funds"><FaMoneyBillWave /></button>
-                                                        <button onClick={() => handleDeactivateShop(shop.id)} className="p-2 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200" title="Deactivate"><FaBan /></button>
-                                                    </>
-                                                )}
-                                                {shop.status === 'deactivated' && (
-                                                    <>
-                                                        <button onClick={() => handleAddFunds(shop.id)} className="p-2 text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors" title="Add Funds"><FaMoneyBillWave /></button>
-                                                        <button onClick={() => handleActivateShop(shop.id)} className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200" title="Activate"><FaUnlock /></button>
-                                                    </>
-                                                )}
-                                                <button onClick={() => handleDeleteShop(shop.id)} className="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-100" title="Delete"><FaTrash /></button>
-                                            </td>
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left">
+                                    <thead className="bg-gray-50 border-b border-gray-100">
+                                        <tr>
+                                            <th className="px-6 py-4 font-semibold text-xs text-gray-500 uppercase tracking-wider">Shop Detail</th>
+                                            <th className="px-6 py-4 font-semibold text-xs text-gray-500 uppercase tracking-wider">Status</th>
+                                            <th className="px-6 py-4 font-semibold text-xs text-gray-500 uppercase tracking-wider">Balance</th>
+                                            <th className="px-6 py-4 font-semibold text-xs text-gray-500 uppercase tracking-wider">Strikes</th>
+                                            <th className="px-6 py-4 font-semibold text-xs text-gray-500 uppercase tracking-wider">Link</th>
+                                            <th className="px-6 py-4 font-semibold text-xs text-gray-500 uppercase tracking-wider text-right">Actions</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-50">
+                                        {filteredShops.map(shop => (
+                                            <tr key={shop.id} className="hover:bg-indigo-50/30 transition-colors group">
+                                                <td className="px-6 py-4">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="relative">
+                                                            <img src={shop.logo_url?.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}` || 'https://via.placeholder.com/50'} className="w-12 h-12 rounded-xl object-cover border border-gray-100 shadow-sm transition-transform group-hover:scale-105" onError={(e) => e.target.src = 'https://via.placeholder.com/50'} />
+                                                            {shop.status === 'approved' && <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>}
+                                                        </div>
+                                                        <div>
+                                                            <div className="font-bold text-gray-900">{shop.name}</div>
+                                                            <div className="text-xs text-gray-500 flex items-center gap-1"><FaUsers className="text-gray-300" /> {shop.owner_name}</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase inline-flex items-center gap-1.5 ${shop.status === 'approved' ? 'bg-green-100 text-green-700 border border-green-200' :
+                                                        shop.status === 'pending' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
+                                                            shop.status === 'deactivated' ? 'bg-gray-100 text-gray-600 border border-gray-200' :
+                                                                'bg-red-100 text-red-700 border border-red-200'
+                                                        }`}>
+                                                        <span className={`w-1.5 h-1.5 rounded-full ${shop.status === 'approved' ? 'bg-green-500' :
+                                                            shop.status === 'pending' ? 'bg-yellow-500' :
+                                                                shop.status === 'deactivated' ? 'bg-gray-500' : 'bg-red-500'
+                                                            }`}></span>
+                                                        {shop.status}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4 font-mono text-gray-700 font-semibold tracking-tight">
+                                                    ${Number(shop.balance || 0).toFixed(2)}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {shop.strikes > 0 ? (
+                                                        <div className="flex items-center gap-1 text-red-600 bg-red-50 px-2 py-1 rounded border border-red-100 w-max">
+                                                            <span className="font-bold">{shop.strikes}</span> ⚠️
+                                                        </div>
+                                                    ) : <span className="text-gray-300">-</span>}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {shop.status === 'approved' ? (
+                                                        <a href={`/shop/${shop.id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium hover:underline">
+                                                            Visit <FaExternalLinkAlt className="text-xs" />
+                                                        </a>
+                                                    ) : <span className="text-gray-400 text-sm">-</span>}
+                                                </td>
+                                                <td className="px-6 py-4 text-right">
+                                                    <div className="flex justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
+                                                        {shop.status === 'pending' && (
+                                                            <>
+                                                                <button onClick={() => handleApproveShop(shop.id)} className="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 hover:scale-105 transition-all shadow-sm" title="Approve"><FaCheck /></button>
+                                                                <button onClick={() => handleRejectShop(shop.id)} className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 hover:scale-105 transition-all shadow-sm" title="Reject"><FaTimes /></button>
+                                                            </>
+                                                        )}
+                                                        {shop.status === 'approved' && (
+                                                            <>
+                                                                <button onClick={() => handleAddFunds(shop.id)} className="p-2 text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 hover:scale-105 transition-all shadow-sm" title="Add Funds"><FaMoneyBillWave /></button>
+                                                                <button onClick={() => handleDeactivateShop(shop.id)} className="p-2 bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 hover:scale-105 transition-all shadow-sm" title="Deactivate"><FaBan /></button>
+                                                            </>
+                                                        )}
+                                                        {shop.status === 'deactivated' && (
+                                                            <>
+                                                                <button onClick={() => handleAddFunds(shop.id)} className="p-2 text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 hover:scale-105 transition-all shadow-sm" title="Add Funds"><FaMoneyBillWave /></button>
+                                                                <button onClick={() => handleActivateShop(shop.id)} className="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 hover:scale-105 transition-all shadow-sm" title="Activate"><FaUnlock /></button>
+                                                            </>
+                                                        )}
+                                                        <button onClick={() => handleDeleteShop(shop.id)} className="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 hover:scale-105 transition-all shadow-sm" title="Delete"><FaTrash /></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -565,7 +652,7 @@ const AdminDashboard = () => {
                                                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center text-white font-bold overflow-hidden border border-gray-200 shadow-sm">
                                                     {user.profile_image ? (
                                                         <img
-                                                            src={`${user.profile_image}`}
+                                                            src={`${API_URL}${user.profile_image}`}
                                                             alt={user.name}
                                                             className="w-full h-full object-cover"
                                                             onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; e.target.parentNode.innerText = user.name.charAt(0).toUpperCase(); }}

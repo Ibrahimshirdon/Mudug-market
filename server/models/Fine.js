@@ -1,25 +1,21 @@
-const mongoose = require('mongoose');
+const db = require('../config/db');
 
-const fineSchema = new mongoose.Schema({
-    shop_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Shop',
-        required: true
-    },
-    amount: {
-        type: Number,
-        required: true
-    },
-    reason: {
-        type: String
-    },
-    status: {
-        type: String,
-        enum: ['pending', 'paid'],
-        default: 'pending'
+class Fine {
+    static async create(data) {
+        const { shop_id, amount, reason } = data;
+        await db.execute(
+            'INSERT INTO fines (shop_id, amount, reason) VALUES (?, ?, ?)',
+            [shop_id, amount, reason]
+        );
     }
-}, {
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
-});
 
-module.exports = mongoose.model('Fine', fineSchema);
+    static async find(query) {
+        if (query.shop_id) {
+            const [rows] = await db.execute('SELECT * FROM fines WHERE shop_id = ?', [query.shop_id]);
+            return rows;
+        }
+        return [];
+    }
+}
+
+module.exports = Fine;

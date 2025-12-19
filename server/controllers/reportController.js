@@ -26,10 +26,7 @@ exports.createReport = async (req, res) => {
 
 exports.getAllReports = async (req, res) => {
     try {
-        const reports = await Report.find()
-            .populate('reporter_id', 'name email')
-            .populate('shop_id', 'name')
-            .sort({ created_at: -1 });
+        const reports = await Report.find();
         res.json(reports);
     } catch (error) {
         console.error(error);

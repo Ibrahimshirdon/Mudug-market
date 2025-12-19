@@ -1,7 +1,9 @@
 import { useState, useContext } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
-import { FaEnvelope, FaLock, FaSpinner } from 'react-icons/fa';
+import ErrorMessage from '../components/ErrorMessage';
+import toast from 'react-hot-toast';
+import { FaEnvelope, FaLock, FaSpinner, FaUser } from 'react-icons/fa';
 
 const Login = () => {
     const location = useLocation();
@@ -27,43 +29,56 @@ const Login = () => {
                 navigate('/');
             }
         } catch (error) {
-            setError('Invalid email or password. Please try again.');
+            console.error('Login error:', error);
+            if (error.response?.data?.isUnverified) {
+                toast.error('Account not verified. Redirecting...');
+                navigate(`/verify-otp?email=${encodeURIComponent(error.response.data.email)}`);
+            } else {
+                setError(error.response?.data?.message || 'Invalid email/username or password. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-[80vh] flex items-center justify-center">
-            <div className="max-w-md w-full">
+        <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 relative overflow-hidden">
+            {/* Animated Background Blobs */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-primary-200/30 rounded-full blur-3xl animate-float"></div>
+            <div className="absolute bottom-0 left-0 w-80 h-80 bg-secondary-200/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '1.5s' }}></div>
+
+            <div className="max-w-md w-full relative z-10">
                 {/* Card */}
-                <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100 animate-scale-in">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-primary to-secondary p-8 text-white text-center">
-                        <h2 className="text-3xl font-bold mb-2">Welcome Back!</h2>
-                        <p className="opacity-90">Login to continue shopping</p>
+                    <div className="relative bg-gradient-to-br from-primary-600 via-primary-500 to-secondary-600 p-10 text-white text-center overflow-hidden">
+                        <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-secondary-400/20 rounded-full blur-2xl"></div>
+                        <div className="relative z-10">
+                            <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-white/30">
+                                <FaUser className="text-4xl" />
+                            </div>
+                            <h2 className="text-4xl font-black mb-2 text-shadow">Welcome Back!</h2>
+                            <p className="opacity-90 text-lg">Login to continue shopping</p>
+                        </div>
                     </div>
 
                     {/* Form */}
                     <div className="p-8">
-                        {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-                                {error}
-                            </div>
-                        )}
+                        <ErrorMessage message={error} type="inline" />
 
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {/* Email */}
                             <div>
-                                <label className="block text-gray-700 font-medium mb-2">Email Address</label>
-                                <div className="relative">
-                                    <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                <label className="block text-gray-700 font-bold mb-2 text-sm">Email Address or Username</label>
+                                <div className="relative group">
+                                    <FaUser className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
                                     <input
-                                        type="email"
+                                        type="text"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                                        placeholder="your@email.com"
+                                        className="input-modern w-full pl-12 pr-4 py-3.5 text-gray-700 font-medium"
+                                        placeholder="your@email.com or Your Name"
                                         required
                                     />
                                 </div>
@@ -71,20 +86,20 @@ const Login = () => {
 
                             {/* Password */}
                             <div>
-                                <label className="block text-gray-700 font-medium mb-2">Password</label>
-                                <div className="relative">
-                                    <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                <label className="block text-gray-700 font-bold mb-2 text-sm">Password</label>
+                                <div className="relative group">
+                                    <FaLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-primary-600 transition-colors" />
                                     <input
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                        className="input-modern w-full pl-12 pr-4 py-3.5 text-gray-700 font-medium"
                                         placeholder="••••••••"
                                         required
                                     />
                                 </div>
-                                <div className="text-right mt-1">
-                                    <Link to="/forgot-password" className="text-sm text-primary hover:underline">
+                                <div className="text-right mt-2">
+                                    <Link to="/forgot-password" className="text-sm text-primary-600 hover:text-primary-700 font-semibold transition-colors">
                                         Forgot Password?
                                     </Link>
                                 </div>
@@ -94,11 +109,11 @@ const Login = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-lg font-bold hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                                className="w-full bg-gradient-to-r from-primary-600 to-secondary-600 text-white py-4 rounded-xl font-bold hover:shadow-glow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-lg hover:scale-105"
                             >
                                 {loading ? (
                                     <>
-                                        <FaSpinner className="animate-spin mr-2" />
+                                        <FaSpinner className="animate-spin mr-2 text-xl" />
                                         Logging in...
                                     </>
                                 ) : (
@@ -108,10 +123,10 @@ const Login = () => {
                         </form>
 
                         {/* Register Link */}
-                        <div className="mt-6 text-center">
+                        <div className="mt-8 text-center p-4 bg-gray-50 rounded-xl">
                             <p className="text-gray-600">
                                 Don't have an account?{' '}
-                                <Link to="/register" className="text-primary font-semibold hover:underline">
+                                <Link to="/register" className="text-primary-600 font-bold hover:text-primary-700 transition-colors">
                                     Register here
                                 </Link>
                             </p>

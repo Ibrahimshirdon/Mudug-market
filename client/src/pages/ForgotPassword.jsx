@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import API_URL from '../api.config';
 import { Link } from 'react-router-dom';
 import { FaEnvelope, FaSpinner, FaArrowLeft } from 'react-icons/fa';
 
@@ -16,7 +17,7 @@ const ForgotPassword = () => {
         setError('');
 
         try {
-            await axios.post('/api/auth/forgot-password', { email });
+            await axios.post(`${API_URL}/api/auth/forgot-password`, { email });
             setMessage('Password reset link has been sent to your email.');
         } catch (error) {
             setError(error.response?.data?.message || 'Something went wrong. Please try again.');

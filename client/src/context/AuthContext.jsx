@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../api.config';
 
 const AuthContext = createContext();
 
@@ -16,16 +17,19 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
-        const { data } = await axios.post('/api/auth/login', { email, password });
-        setUser(data);
-        localStorage.setItem('userInfo', JSON.stringify(data));
-        return data; // Return data so we can check role in the component
+        try {
+            const { data } = await axios.post(`${API_URL}/api/auth/login`, { email, password });
+            setUser(data);
+            localStorage.setItem('userInfo', JSON.stringify(data));
+            return data;
+        } catch (error) {
+            throw error;
+        }
     };
 
     const register = async (name, email, password, phone, role) => {
-        const { data } = await axios.post('/api/auth/register', { name, email, password, phone, role });
-        setUser(data);
-        localStorage.setItem('userInfo', JSON.stringify(data));
+        const { data } = await axios.post(`${API_URL}/api/auth/register`, { name, email, password, phone, role });
+        return data; // Return data so Register.jsx can redirect
     };
 
     const logout = () => {

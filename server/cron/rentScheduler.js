@@ -25,15 +25,17 @@ const rentScheduler = () => {
 
                     if (shop.balance >= RENT_AMOUNT) {
                         // 1. Deduct Rent
-                        shop.balance -= RENT_AMOUNT;
+                        const newBalance = Number(shop.balance) - RENT_AMOUNT;
 
                         // 2. Extend Expiry (30 days)
                         const newExpiry = new Date(now);
                         newExpiry.setDate(newExpiry.getDate() + 30);
-                        shop.subscription_expiry = newExpiry;
-                        shop.subscription_status = 'active';
 
-                        await shop.save();
+                        await Shop.findByIdAndUpdate(shop.id, {
+                            balance: newBalance,
+                            subscription_expiry: newExpiry,
+                            subscription_status: 'active'
+                        });
 
                         // 3. Log Transaction
                         await Transaction.create({
@@ -49,11 +51,12 @@ const rentScheduler = () => {
                         // Insufficient Funds
                         console.log(`Shop ${shop.id} NSF. Deactivating...`);
 
-                        shop.status = 'deactivated';
-                        shop.subscription_status = 'expired';
-                        await shop.save();
+                        await Shop.findByIdAndUpdate(shop.id, {
+                            status: 'deactivated',
+                            subscription_status: 'expired'
+                        });
 
-                        // Optional: Notify Owner (Could skip for migration simplicity or add Notification model call)
+                        // Optional: Notify Owner
                     }
                 }
             }

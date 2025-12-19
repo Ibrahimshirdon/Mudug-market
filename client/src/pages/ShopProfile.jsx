@@ -1,6 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../api.config';
+import { toast } from 'react-hot-toast';
 import AuthContext from '../context/AuthContext';
 import { FaFlag } from 'react-icons/fa';
 
@@ -21,7 +23,7 @@ const ShopProfile = () => {
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` }
             };
-            await axios.post('/api/reports', {
+            await axios.post(`${API_URL}/api/reports`, {
                 shopId: shop.id,
                 reason: reportReason,
                 description: reportDescription
@@ -33,7 +35,7 @@ const ShopProfile = () => {
             setShowSuccessModal(true);
         } catch (error) {
             console.error(error);
-            alert('Error submitting report.');
+            toast.error('Error submitting report.');
         }
     };
 
@@ -41,11 +43,11 @@ const ShopProfile = () => {
         const fetchShopData = async () => {
             try {
                 // Fetch specific shop by ID
-                const { data: shopData } = await axios.get(`/api/shops/${id}`);
+                const { data: shopData } = await axios.get(`${API_URL}/api/shops/${id}`);
                 setShop(shopData);
 
                 // Fetch all products and filter
-                const { data: prodData } = await axios.get('/api/products');
+                const { data: prodData } = await axios.get(`${API_URL}/api/products`);
 
                 // Filter products belonging to this shop. 
                 // Handle both straight ID checks and populated object checks if backend changes.
@@ -82,7 +84,7 @@ const ShopProfile = () => {
                     <div className="flex flex-col md:flex-row items-center gap-6">
                         <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 flex-shrink-0">
                             <img
-                                src={shop.logo_url ? (shop.logo_url.startsWith('http') ? shop.logo_url : `${shop.logo_url}`) : 'https://via.placeholder.com/150?text=Shop+Logo'}
+                                src={shop.logo_url ? (shop.logo_url.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}`) : 'https://via.placeholder.com/150?text=Shop+Logo'}
                                 alt={shop.name}
                                 className="w-full h-full object-cover"
                             />
@@ -226,11 +228,11 @@ const ShopProfile = () => {
                                 <img
                                     src={
                                         product.images && product.images.length > 0
-                                            ? (product.images[0].image_url.startsWith('http') ? product.images[0].image_url : `${product.images[0].image_url}`)
+                                            ? (product.images[0].image_url.startsWith('http') ? product.images[0].image_url : `${API_URL}${product.images[0].image_url}`)
                                             : product.first_image
-                                                ? (product.first_image.startsWith('http') ? product.first_image : `${product.first_image}`)
+                                                ? (product.first_image.startsWith('http') ? product.first_image : `${API_URL}${product.first_image}`)
                                                 : product.image_url
-                                                    ? (product.image_url.startsWith('http') ? product.image_url : `${product.image_url}`)
+                                                    ? (product.image_url.startsWith('http') ? product.image_url : `${API_URL}${product.image_url}`)
                                                     : 'https://via.placeholder.com/300'
                                     }
                                     alt={product.name}

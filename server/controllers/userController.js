@@ -26,14 +26,12 @@ exports.updateUserProfile = async (req, res) => {
         const user = await User.findById(req.user.id);
 
         if (user) {
-            user.name = req.body.name || user.name;
-            user.phone = req.body.phone || user.phone;
+            const updateData = {};
+            if (req.body.name) updateData.name = req.body.name;
+            if (req.body.phone) updateData.phone = req.body.phone;
+            if (req.file) updateData.profile_image = `/uploads/${req.file.filename}`;
 
-            if (req.file) {
-                user.profile_image = req.file.path;
-            }
-
-            const updatedUser = await user.save();
+            const updatedUser = await User.findByIdAndUpdate(user.id, updateData);
 
             res.json({
                 _id: updatedUser.id,

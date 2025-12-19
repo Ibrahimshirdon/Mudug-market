@@ -3,6 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const compression = require('compression');
 const path = require('path');
 const connectDB = require('./config/db');
 
@@ -12,6 +13,7 @@ const shopRoutes = require('./routes/shopRoutes');
 const productRoutes = require('./routes/productRoutes');
 const favoriteRoutes = require('./routes/favoriteRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const orderRoutes = require('./routes/orderRoutes'); // Added orderRoutes import
 const adminRoutes = require('./routes/adminRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
@@ -24,7 +26,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
-connectDB();
+// Database Init
+// const db = require('./config/db'); // Pool created on load
 
 // Middleware
 app.use(cors());
@@ -33,6 +36,7 @@ app.use(helmet({
     crossOriginResourcePolicy: false,
 }));
 app.use(morgan('dev'));
+app.use(compression());
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -47,21 +51,10 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/orders', orderRoutes);
 
-app.use('/api/categories', categoryRoutes);
-
-// Serve static files from the React client (production)
-// Check if we are in production or if the dist folder exists
-const clientDistPath = path.join(__dirname, '..', 'client', 'dist');
-app.use(express.static(clientDistPath));
-
-// Handle React routing, return all requests to React app
-app.get('*', (req, res) => {
-    // Check if the request is for an API endpoint
-    if (req.path.startsWith('/api')) {
-        return res.status(404).json({ message: 'API endpoint not found' });
-    }
-    res.sendFile(path.join(clientDistPath, 'index.html'));
+app.get('/', (req, res) => {
+    res.send('API is running...');
 });
 
 const rentScheduler = require('./cron/rentScheduler');

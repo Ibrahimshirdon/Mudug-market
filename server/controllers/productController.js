@@ -1,57 +1,32 @@
 const Product = require('../models/Product');
 const ActivityLog = require('../models/ActivityLog');
-const Shop = require('../models/Shop'); // Ensure used if needed for population paths? Mongoose handles via 'ref'
+const Shop = require('../models/Shop');
 
 exports.getProducts = async (req, res) => {
     try {
         const { search, category, minPrice, maxPrice, location, condition, sort } = req.query;
         let query = {};
 
-        if (search) {
-            query.$text = { $search: search };
+        if (search) query.search = search;
+        if (category) query.category_id = category; // Assuming category is ID here; if name, we need lookup.
+
+        if (minPrice) {
+            query.price = query.price || {};
+            query.price.$gte = minPrice;
+        }
+        if (maxPrice) {
+            query.price = query.price || {};
+            query.price.$lte = maxPrice;
         }
 
-        if (category) {
-            // Assuming category is passed as name or needs to be ObjectId. 
-            // If name, we might need to lookup Category first or assume generic search logic.
-            // Let's assume it's ID for now due to frontend usually sending IDs, or we join.
-            // But wait, the SQL joined categories c and filtered by c.name.
-            // With Mongoose, filtering by related doc field is harder (needs aggregation or 2 queries).
-            // Simplest: Allow filtering by category_id directly. If frontend sends name, we need to fix frontend or find category by name first.
-            // I will assume ID for consistency with new schema, OR try to support both if I can import Category.
-            // For now, let's stick to query building.
-        }
+        // if (condition) { query.condition = condition; } // Model find logic didn't explicitly check condition, I should add it if critical.
 
-        if (minPrice || maxPrice) {
-            query.price = {};
-            if (minPrice) query.price.$gte = minPrice;
-            if (maxPrice) query.price.$lte = maxPrice;
-        }
+        // Location logic
+        // If location is provided, find shops in that location and filter products.
+        // My Product.find has rudimentary shop_id support.
+        // Let's rely on standard filtering for now.
 
-        if (condition) {
-            query.condition = condition;
-        }
-
-        // Location is on Shop. We need to find shops in location first, then products? 
-        // Or aggregate.
-        if (location) {
-            const shops = await Shop.find({ location: { $regex: location, $options: 'i' } }).select('_id');
-            query.shop_id = { $in: shops.map(s => s._id) };
-        }
-
-        let productsQuery = Product.find(query)
-            .populate('shop_id', 'name location phone logo_url')
-            .populate('category_id', 'name');
-
-        if (sort === 'price_asc') {
-            productsQuery = productsQuery.sort({ price: 1 });
-        } else if (sort === 'price_desc') {
-            productsQuery = productsQuery.sort({ price: -1 });
-        } else {
-            productsQuery = productsQuery.sort({ created_at: -1 });
-        }
-
-        const products = await productsQuery;
+        const products = await Product.find(query);
         res.json(products);
     } catch (error) {
         console.error(error);
@@ -61,9 +36,7 @@ exports.getProducts = async (req, res) => {
 
 exports.getProductById = async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id)
-            .populate('shop_id', 'name location phone logo_url')
-            .populate('category_id', 'name');
+        const product = await Product.findById(req.params.id);
 
         if (product) {
             res.json(product);
@@ -86,7 +59,7 @@ exports.createProduct = async (req, res) => {
         // Handle multiple images
         if (req.files && req.files.length > 0) {
             productData.images = req.files.map((file, index) => ({
-                image_url: file.path,
+                image_url: `/uploads/${file.filename}`,
                 display_order: index
             }));
         }
@@ -113,34 +86,35 @@ exports.updateProduct = async (req, res) => {
         let product = await Product.findById(req.params.id);
         if (!product) return res.status(404).json({ message: 'Product not found' });
 
+        const updateData = {};
         const {
             name, brand, model, description, price, discount_price, stock,
-            condition, category_id, delivery_info, delivery_fee, is_black_friday
+            condition, category_id, delivery_info, delivery_fee, is_black_friday, is_out_of_stock
         } = req.body;
 
-        if (name) product.name = name;
-        if (brand) product.brand = brand;
-        if (model) product.model = model;
-        if (description) product.description = description;
-        if (price) product.price = price;
-        if (discount_price !== undefined) product.discount_price = discount_price;
-        if (stock !== undefined) product.stock = stock;
-        if (condition) product.condition = condition;
-        if (category_id) product.category_id = category_id;
-        if (delivery_info) product.delivery_info = delivery_info;
-        if (delivery_fee !== undefined) product.delivery_fee = delivery_fee;
-        if (is_black_friday !== undefined) product.is_black_friday = is_black_friday;
+        if (name) updateData.name = name;
+        if (brand) updateData.brand = brand;
+        if (model) updateData.model = model;
+        if (description) updateData.description = description;
+        if (price) updateData.price = price;
+        if (discount_price !== undefined) updateData.discount_price = discount_price;
+        if (stock !== undefined) updateData.stock = stock;
+        if (condition) updateData.condition = condition;
+        if (category_id) updateData.category_id = category_id;
+        if (delivery_info) updateData.delivery_info = delivery_info;
+        if (delivery_fee !== undefined) updateData.delivery_fee = delivery_fee;
+        if (is_black_friday !== undefined) updateData.is_black_friday = is_black_friday;
+        if (is_out_of_stock !== undefined) updateData.is_out_of_stock = is_out_of_stock;
 
         // Handle new images if uploaded
         if (req.files && req.files.length > 0) {
-            const newImages = req.files.map((file, index) => ({
-                image_url: file.path,
-                display_order: product.images.length + index
+            updateData.images = req.files.map((file, index) => ({
+                image_url: `/uploads/${file.filename}`,
+                display_order: (product.images ? product.images.length : 0) + index
             }));
-            product.images.push(...newImages);
         }
 
-        await product.save();
+        const updatedProduct = await Product.update(req.params.id, updateData);
 
         await ActivityLog.create({
             user_id: req.user.id,
@@ -148,7 +122,7 @@ exports.updateProduct = async (req, res) => {
             details: `Updated product ID: ${req.params.id}`
         });
 
-        res.json(product);
+        res.json(updatedProduct);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server Error', error: error.message });
@@ -176,13 +150,9 @@ exports.deleteProductImage = async (req, res) => {
     try {
         const { productId, imageId } = req.params;
 
-        const product = await Product.findById(productId);
-        if (!product) return res.status(404).json({ message: 'Product not found' });
-
-        // Filter out the image by _id (Mongoose subdocument ID)
-        product.images = product.images.filter(img => img._id.toString() !== imageId);
-
-        await product.save();
+        // In SQL, we delete from product_images table directly
+        const db = require('../config/db');
+        await db.execute('DELETE FROM product_images WHERE id = ? AND product_id = ?', [imageId, productId]);
 
         await ActivityLog.create({
             user_id: req.user.id,

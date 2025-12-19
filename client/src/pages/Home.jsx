@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../api.config';
 import { useNavigate } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import ProductCard from '../components/ProductCard';
-import { FaSpinner, FaExclamationTriangle, FaShoppingBag, FaRocket, FaTags, FaFire, FaStore, FaShieldAlt, FaTruck, FaHeadset, FaArrowRight } from 'react-icons/fa';
+import ErrorMessage from '../components/ErrorMessage';
+import { FaSpinner, FaShoppingBag, FaRocket, FaTags, FaFire, FaStore, FaArrowRight, FaMapMarkerAlt } from 'react-icons/fa';
 
 const Home = () => {
     const navigate = useNavigate();
@@ -32,8 +34,8 @@ const Home = () => {
         try {
             setLoading(true);
             const [productsRes, shopsRes] = await Promise.all([
-                axios.get('/api/products'),
-                axios.get('/api/shops')
+                axios.get(`${API_URL}/api/products`),
+                axios.get(`${API_URL}/api/shops`)
             ]);
 
             setProducts(productsRes.data);
@@ -107,67 +109,81 @@ const Home = () => {
     }
 
     if (error) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] animate-fadeIn">
-                <div className="bg-red-50 p-8 rounded-3xl text-center max-w-md border border-red-100 shadow-sm">
-                    <FaExclamationTriangle className="text-6xl text-red-500 mb-4 mx-auto" />
-                    <p className="text-xl text-gray-800 font-semibold mb-2">Connection Error</p>
-                    <p className="text-gray-600 mb-6">{error}</p>
-                    <button
-                        onClick={fetchData}
-                        className="px-8 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-700 transition-all shadow-md"
-                    >
-                        Retry Connection
-                    </button>
-                </div>
-            </div>
-        );
+        return <ErrorMessage message={error} type="full" onRetry={fetchData} />;
     }
 
     return (
         <div className="animate-fadeIn space-y-16 pb-12">
 
-            {/* HER SECTION */}
-            <section className="relative bg-gradient-to-br from-primary-800 via-primary-700 to-secondary-800 text-white rounded-[2.5rem] p-8 md:p-16 shadow-2xl overflow-hidden mt-4 mx-2 md:mx-0">
-                {/* Decorative Blobs */}
-                <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                <div className="absolute bottom-0 left-0 w-72 h-72 bg-secondary-500/20 rounded-full blur-3xl -ml-24 -mb-24"></div>
+            {/* HERO SECTION */}
+            <section className="relative bg-gradient-to-br from-primary-900 via-primary-700 to-secondary-800 text-white rounded-[3rem] p-8 md:p-20 shadow-2xl overflow-hidden mt-6 mx-2 md:mx-0 border border-primary-600/20">
+                {/* Animated Decorative Blobs */}
+                <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -mr-32 -mt-32 animate-float"></div>
+                <div className="absolute bottom-0 left-0 w-80 h-80 bg-secondary-400/20 rounded-full blur-3xl -ml-24 -mb-24 animate-float" style={{ animationDelay: '1s' }}></div>
+                <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-primary-300/10 rounded-full blur-3xl animate-pulse"></div>
 
-                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    <div className="space-y-6">
-                        <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
+                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <div className="space-y-8">
+                        <div className="inline-flex items-center gap-2 glass-dark px-5 py-3 rounded-full border border-white/20 animate-slide-down">
                             <FaRocket className="text-yellow-300 animate-bounce" />
-                            <span className="text-sm font-semibold tracking-wide">The #1 Marketplace in Galkacyo</span>
+                            <span className="text-sm font-bold tracking-wide">The #1 Marketplace in Galkacyo</span>
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
+                        <h1 className="text-5xl md:text-7xl font-black leading-tight animate-slide-up text-shadow-lg">
                             Buy & Sell in <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-green-300">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-green-300 to-emerald-400 animate-shimmer bg-shimmer">
                                 Digital Speed
                             </span>
                         </h1>
-                        <p className="text-lg md:text-xl text-gray-100 max-w-xl leading-relaxed">
+                        <p className="text-lg md:text-xl text-gray-100 max-w-xl leading-relaxed animate-slide-up" style={{ animationDelay: '0.2s' }}>
                             Join thousands of trusted sellers and happy buyers. From electronics to fashion, find everything you need locally.
                         </p>
-                        <div className="flex flex-wrap gap-4 pt-4">
-                            <button onClick={() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' })} className="px-8 py-4 bg-white text-primary-800 rounded-xl font-bold hover:bg-gray-100 transition-transform hover:scale-105 shadow-lg flex items-center gap-2">
-                                Start Shopping <FaArrowRight />
+                        <div className="flex flex-wrap gap-4 pt-4 animate-slide-up" style={{ animationDelay: '0.4s' }}>
+                            <button
+                                onClick={() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' })}
+                                className="group px-8 py-4 bg-white text-primary-800 rounded-2xl font-bold hover:bg-gray-50 transition-all hover:scale-105 shadow-2xl flex items-center gap-3 hover:shadow-white/20"
+                            >
+                                Start Shopping
+                                <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
                             </button>
-                            <button onClick={() => navigate('/seller/dashboard')} className="px-8 py-4 bg-transparent border-2 border-white/30 hover:bg-white/10 text-white rounded-xl font-bold transition-all flex items-center gap-2 backdrop-blur-sm">
-                                Open Your Shop <FaStore />
+                            <button
+                                onClick={() => navigate('/seller/dashboard')}
+                                className="group px-8 py-4 glass-dark border-2 border-white/30 hover:bg-white/20 text-white rounded-2xl font-bold transition-all flex items-center gap-3 hover:scale-105"
+                            >
+                                Open Your Shop
+                                <FaStore className="group-hover:scale-110 transition-transform" />
                             </button>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="grid grid-cols-3 gap-6 pt-8 border-t border-white/20">
+                            <div className="text-center">
+                                <div className="text-3xl font-black text-yellow-300">500+</div>
+                                <div className="text-sm text-gray-300 mt-1">Products</div>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-3xl font-black text-green-300">100+</div>
+                                <div className="text-sm text-gray-300 mt-1">Sellers</div>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-3xl font-black text-blue-300">1000+</div>
+                                <div className="text-sm text-gray-300 mt-1">Happy Buyers</div>
+                            </div>
                         </div>
                     </div>
                     <div className="hidden lg:block relative">
-                        {/* Abstract Illustration Placeholder or specific graphic */}
-                        <div className="bg-gradient-to-tr from-white/10 to-transparent p-8 rounded-3xl backdrop-blur-sm border border-white/10 relative transform rotate-3 hover:rotate-0 transition-all duration-500">
+                        {/* Product Preview Grid */}
+                        <div className="glass-dark p-8 rounded-3xl backdrop-blur-xl border border-white/20 relative transform hover:rotate-0 transition-all duration-700 rotate-2 hover:scale-105">
                             <div className="grid grid-cols-2 gap-4">
                                 {products.slice(0, 4).map((p, idx) => {
                                     const imgUrl = p.images?.[0]?.image_url || p.image_url;
                                     return (
-                                        <div key={p.id} className={`bg-white p-3 rounded-xl shadow-lg transform ${idx % 2 === 0 ? 'translate-y-4' : '-translate-y-4'}`}>
-                                            {imgUrl ? <img src={imgUrl.startsWith('http') ? imgUrl : `${imgUrl}`} className="w-full h-32 object-cover rounded-lg mb-2" /> : <div className="w-full h-32 bg-gray-100 rounded-lg mb-2"></div>}
-                                            <div className="h-2 w-20 bg-gray-200 rounded mb-1"></div>
-                                            <div className="h-2 w-12 bg-primary-200 rounded"></div>
+                                        <div key={p.id} className={`bg-white p-4 rounded-2xl shadow-xl transform transition-all duration-500 hover:scale-105 ${idx % 2 === 0 ? 'translate-y-4 hover:translate-y-2' : '-translate-y-4 hover:-translate-y-2'}`}>
+                                            {imgUrl ?
+                                                <img src={imgUrl.startsWith('http') ? imgUrl : `${API_URL}${imgUrl}`} className="w-full h-36 object-cover rounded-xl mb-3 shadow-md" alt={p.name} />
+                                                : <div className="w-full h-36 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl mb-3"></div>
+                                            }
+                                            <div className="h-3 w-24 bg-gray-200 rounded-full mb-2"></div>
+                                            <div className="h-3 w-16 bg-primary-200 rounded-full"></div>
                                         </div>
                                     )
                                 })}
@@ -179,26 +195,29 @@ const Home = () => {
 
             {/* CATEGORIES SECTION */}
             {categories.length > 0 && (
-                <section>
-                    <div className="flex items-center justify-between mb-6 px-2">
-                        <h2 className="text-2xl font-bold text-gray-800">Browse Categories</h2>
+                <section className="animate-slide-up">
+                    <div className="flex items-center justify-between mb-8 px-2">
+                        <div>
+                            <h2 className="text-3xl font-black text-gray-800 mb-2">Browse Categories</h2>
+                            <p className="text-gray-600">Find exactly what you're looking for</p>
+                        </div>
                     </div>
-                    <div className="flex gap-4 overflow-x-auto pb-4 px-2 scrollbar-hide">
+                    <div className="flex gap-4 overflow-x-auto pb-6 px-2 scrollbar-hide">
                         <button
                             onClick={() => handleFilterChange('category', '')}
-                            className={`flex flex-col items-center justify-center min-w-[100px] h-28 rounded-2xl transition-all ${!filters.category ? 'bg-primary-600 text-white shadow-lg scale-105' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-100'}`}
+                            className={`group flex flex-col items-center justify-center min-w-[120px] h-32 rounded-3xl transition-all duration-300 ${!filters.category ? 'bg-gradient-to-br from-primary-600 to-secondary-600 text-white shadow-glow-lg scale-105' : 'bg-white text-gray-600 hover:bg-gray-50 border-2 border-gray-100 hover:border-primary-200 hover:scale-105 shadow-soft'}`}
                         >
-                            <FaTags className="text-2xl mb-2" />
-                            <span className="font-medium">All</span>
+                            <FaTags className={`text-3xl mb-3 transition-transform group-hover:scale-110 ${!filters.category ? 'animate-bounce' : ''}`} />
+                            <span className="font-bold">All</span>
                         </button>
                         {categories.map((cat, idx) => (
                             <button
                                 key={idx}
                                 onClick={() => handleFilterChange('category', cat)}
-                                className={`flex flex-col items-center justify-center min-w-[100px] h-28 rounded-2xl transition-all ${filters.category === cat ? 'bg-primary-600 text-white shadow-lg scale-105' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-100'}`}
+                                className={`group flex flex-col items-center justify-center min-w-[120px] h-32 rounded-3xl transition-all duration-300 ${filters.category === cat ? 'bg-gradient-to-br from-primary-600 to-secondary-600 text-white shadow-glow-lg scale-105' : 'bg-white text-gray-600 hover:bg-gray-50 border-2 border-gray-100 hover:border-primary-200 hover:scale-105 shadow-soft'}`}
                             >
-                                <FaShoppingBag className="text-2xl mb-2" />
-                                <span className="font-medium text-sm px-2 text-center break-words w-full">{cat}</span>
+                                <FaShoppingBag className={`text-3xl mb-3 transition-transform group-hover:scale-110 ${filters.category === cat ? 'animate-bounce' : ''}`} />
+                                <span className="font-bold text-sm px-3 text-center break-words w-full">{cat}</span>
                             </button>
                         ))}
                     </div>
@@ -207,30 +226,36 @@ const Home = () => {
 
             {/* FEATURED SHOPS */}
             {featuredShops.length > 0 && (
-                <section className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between mb-8">
+                <section className="card-premium p-10 animate-slide-up">
+                    <div className="flex items-center justify-between mb-10">
                         <div>
-                            <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                            <h2 className="text-3xl font-black text-gray-800 flex items-center gap-3 mb-2">
                                 <FaStore className="text-primary-500" /> Featured Shops
                             </h2>
-                            <p className="text-gray-500">Top rated sellers in your area</p>
+                            <p className="text-gray-600">Top rated sellers in your area</p>
                         </div>
-                        <button className="text-primary-600 font-semibold hover:underline">View All</button>
+                        <button className="text-primary-600 font-bold hover:text-primary-700 transition-colors flex items-center gap-2 group">
+                            View All
+                            <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
+                        </button>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                         {featuredShops.map(shop => (
-                            <a href={`/shop/${shop.id}`} key={shop.id} className="group block bg-gray-50 hover:bg-white border invalid:border-gray-200 hover:border-primary-200 rounded-2xl p-6 transition-all duration-300 hover:shadow-lg text-center">
-                                <div className="w-20 h-20 mx-auto mb-4 relative">
+                            <a href={`/shop/${shop.id}`} key={shop.id} className="group block bg-gradient-to-br from-gray-50 to-white hover:from-primary-50 hover:to-secondary-50 border-2 border-gray-100 hover:border-primary-300 rounded-3xl p-6 transition-all duration-500 hover:shadow-xl text-center transform hover:-translate-y-2">
+                                <div className="w-24 h-24 mx-auto mb-4 relative">
                                     <img
-                                        src={shop.logo_url ? (shop.logo_url.startsWith('http') ? shop.logo_url : `${shop.logo_url}`) : 'https://via.placeholder.com/150'}
-                                        className="w-full h-full rounded-full object-cover border-4 border-white shadow-md group-hover:scale-110 transition-transform"
+                                        src={shop.logo_url ? (shop.logo_url.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}`) : 'https://via.placeholder.com/150'}
+                                        className="w-full h-full rounded-full object-cover border-4 border-white shadow-xl group-hover:scale-110 group-hover:shadow-2xl transition-all duration-500"
                                         onError={(e) => e.target.src = 'https://via.placeholder.com/150'}
                                     />
-                                    <div className="absolute bottom-0 right-0 bg-green-500 w-5 h-5 rounded-full border-2 border-white"></div>
+                                    <div className="absolute bottom-0 right-0 bg-green-500 w-6 h-6 rounded-full border-4 border-white shadow-lg"></div>
                                 </div>
-                                <h3 className="font-bold text-gray-800 text-lg mb-1 group-hover:text-primary-600">{shop.name}</h3>
-                                <p className="text-sm text-gray-500 mb-3 line-clamp-1">{shop.location}</p>
-                                <span className="inline-block bg-primary-50 text-primary-700 text-xs font-bold px-3 py-1 rounded-full">
+                                <h3 className="font-black text-gray-800 text-lg mb-2 group-hover:text-primary-600 transition-colors">{shop.name}</h3>
+                                <p className="text-sm text-gray-500 mb-4 line-clamp-1 flex items-center justify-center gap-1">
+                                    <FaMapMarkerAlt className="text-primary-500" />
+                                    {shop.location}
+                                </p>
+                                <span className="inline-block bg-gradient-to-r from-primary-600 to-secondary-600 text-white text-sm font-bold px-4 py-2 rounded-full shadow-md group-hover:shadow-glow transition-all">
                                     Visit Shop
                                 </span>
                             </a>
@@ -239,85 +264,19 @@ const Home = () => {
                 </section>
             )}
 
-            {/* ABOUT WEBSITE SECTION */}
-            <section className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-gray-100 flex flex-col md:flex-row items-center gap-12">
-                <div className="flex-1 space-y-6">
-                    <div className="inline-block bg-primary-100 text-primary-700 font-bold px-4 py-2 rounded-full text-sm">
-                        About Galkacyo Market
-                    </div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-gray-800 leading-tight">
-                        Revolutionizing Digital Commerce in <span className="text-primary-600">Mudug</span>
-                    </h2>
-                    <p className="text-lg text-gray-600 leading-relaxed">
-                        Galkacyo Digital Market is the region's premier online platform designed to bridge the gap between local sellers and buyers.
-                        We empower small businesses by providing them with a digital storefront while offering customers a seamless shopping experience
-                        from the comfort of their homes.
-                    </p>
-                    <p className="text-lg text-gray-600 leading-relaxed">
-                        Whether you are looking for the latest electronics, fashion, or home essentials, our platform ensures quality, trust, and speed.
-                    </p>
-                    <button onClick={() => navigate('/register')} className="px-8 py-3 bg-gray-900 text-white rounded-xl font-bold hover:bg-gray-800 transition-all shadow-lg">
-                        Join Our Community
-                    </button>
-                </div>
-                <div className="flex-1 w-full relative">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-primary-600/20 to-secondary-500/20 rounded-3xl transform rotate-3"></div>
-                    <img
-                        src="/community-marketplace.jpg"
-                        alt="Galkacyo Digital Market Community"
-                        className="relative rounded-3xl shadow-xl w-full object-cover h-80 md:h-[400px]"
-                    />
-                </div>
-            </section>
 
-            {/* WHY CHOOSE US */}
-            <section className="grid grid-cols-1 md:grid-cols-3 gap-8 py-8">
-                <div className="bg-blue-50 p-6 rounded-2xl flex items-start gap-4">
-                    <div className="bg-blue-100 p-3 rounded-xl text-blue-600">
-                        <FaShieldAlt className="text-2xl" />
-                    </div>
-                    <div>
-                        <h3 className="font-bold text-gray-800 mb-1">Secure Payments</h3>
-                        <p className="text-sm text-gray-600">Your transactions are 100% safe and encrypted.</p>
-                    </div>
-                </div>
-                <div className="bg-green-50 p-6 rounded-2xl flex items-start gap-4">
-                    <div className="bg-green-100 p-3 rounded-xl text-green-600">
-                        <FaTruck className="text-2xl" />
-                    </div>
-                    <div>
-                        <h3 className="font-bold text-gray-800 mb-1">Local Delivery</h3>
-                        <p className="text-sm text-gray-600">Fast delivery from shops right in your neighborhood.</p>
-                    </div>
-                </div>
-                <div className="bg-purple-50 p-6 rounded-2xl flex items-start gap-4">
-                    <div className="bg-purple-100 p-3 rounded-xl text-purple-600">
-                        <FaHeadset className="text-2xl" />
-                    </div>
-                    <div>
-                        <h3 className="font-bold text-gray-800 mb-1">24/7 Support</h3>
-                        <p className="text-sm text-gray-600">We are here to help you anytime, anywhere.</p>
-                    </div>
-                </div>
-            </section>
 
-            {/* MAIN PRODUCTS GRID - with Search/Filter integration */}
-            <section id="products-section" className="scroll-mt-24">
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+
+
+            {/* MAIN PRODUCTS GRID */}
+            <section id="products-section" className="scroll-mt-24 animate-slide-up">
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
                     <div>
-                        <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
+                        <h2 className="text-4xl font-black text-gray-800 flex items-center gap-3 mb-2">
                             <FaFire className="text-orange-500 animate-pulse" /> Trending Deals
                         </h2>
-                        <p className="text-gray-500 mt-1">Found {filteredProducts.length} amazing items for you</p>
+                        <p className="text-gray-600 text-lg">Found <span className="font-bold text-primary-600">{filteredProducts.length}</span> amazing items for you</p>
                     </div>
-
-                    {/* Integrated Search Bar Component would ideally be here or above. 
-                        Since we have SearchBar component, let's render it here or stick to top?
-                        The design usually puts Search near Hero. 
-                        Let's place SearchBar nicely _above_ this section or just below Hero.
-                        For now, I will render SearchBar below Hero in the layout flow or keep it here? 
-                        The previous layout had it under Hero. I'll put it just above this section or inside it.
-                    */}
                 </div>
 
                 <div className="mb-8">
