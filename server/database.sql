@@ -270,11 +270,11 @@ INSERT IGNORE INTO categories (name, icon) VALUES
 --    DB_NAME=mudug_market
 -- 4. To create an admin user, register normally then run:
 --    UPDATE users SET role = 'admin' WHERE email = 'your@email.com';
-INSERT INTO  (name, email, password, phone, role) 
+INSERT INTO users (name, email, password, phone, role) 
 VALUES (
     'ibrahim',
-    'ibrahim@.com',
-    '$2a$10$YourHashedPasswordHere',  -- You'll need to hash this
+    'ibrahimshirdon@gmail.com',
+    '$2a$10$abcdefghijklmnopqrstuvwxyz1234567890', -- Placeholder hash
     '252666251592',
     'admin'
 );
