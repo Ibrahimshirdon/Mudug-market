@@ -3,8 +3,8 @@
 -- Complete Database Setup Script
 -- ========================================
 
-CREATE DATABASE IF NOT EXISTS mudug_market;
-USE mudug_market;
+-- Database setup starts below:
+
 
 -- ========================================
 -- CORE TABLES
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
     profile_image VARCHAR(255),
-    role ENUM('buyer', 'seller', 'admin') DEFAULT 'buyer',
+    role ENUM('user', 'shop_owner', 'admin') DEFAULT 'user',
     reset_password_token VARCHAR(255),
     reset_password_expires DATETIME,
     otp_code VARCHAR(6),
@@ -258,18 +258,6 @@ INSERT IGNORE INTO categories (name, icon) VALUES
 ('Automotive', '🚗'),
 ('Beauty', '💄');
 
--- ========================================
--- NOTES
--- ========================================
--- 1. Run this script to set up the complete database
--- 2. Make sure MySQL is running before executing
--- 3. Update .env file with database credentials:
---    DB_HOST=localhost
---    DB_USER=root
---    DB_PASSWORD=your_password
---    DB_NAME=mudug_market
--- 4. To create an admin user, register normally then run:
---    UPDATE users SET role = 'admin' WHERE email = 'your@email.com';
 INSERT INTO users (name, email, password, phone, role) 
 VALUES (
     'ibrahim',

@@ -7,7 +7,7 @@
         "client"
     ],
     "scripts": {
-        "start": "npm start -w server",
+        "start": "node server/index.js",
         "build": "npm install -w server && (npm run build -w client || echo 'No build needed')"
     }
 }
