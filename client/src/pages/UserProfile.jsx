@@ -102,15 +102,16 @@ const UserProfile = () => {
 
             const { data } = await axios.put(`${API_URL}/api/users/profile`, formData, config);
 
-            // Update local storage
+            // Update local storage and context without reloading
             const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-            userInfo.name = data.name;
-            userInfo.phone = data.phone;
-            userInfo.profile_image = data.profile_image;
-            localStorage.setItem('userInfo', JSON.stringify(userInfo));
-
-            // Force reload to update context (or better: add update function to context)
-            window.location.reload();
+            const updatedUserInfo = {
+                ...userInfo,
+                name: data.name,
+                phone: data.phone,
+                profile_image: data.profile_image
+            };
+            localStorage.setItem('userInfo', JSON.stringify(updatedUserInfo));
+            setUser(updatedUserInfo);
 
             setMessage('Profile updated successfully!');
         } catch (err) {
