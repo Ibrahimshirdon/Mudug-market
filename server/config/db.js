@@ -15,6 +15,7 @@ const pool = mysql.createPool({
 });
 
 // Test connection
+console.log(`📡 Attempting DB connection to ${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 3306}...`);
 pool.getConnection((err, connection) => {
     if (err) {
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
