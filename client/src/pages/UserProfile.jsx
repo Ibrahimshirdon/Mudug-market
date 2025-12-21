@@ -7,7 +7,7 @@ import { FaUser, FaEnvelope, FaPhone, FaCamera, FaSpinner, FaLock } from 'react-
 import { toast } from 'react-hot-toast';
 
 const UserProfile = () => {
-    const { user, login } = useContext(AuthContext); // Re-using login to update context user? Ideally need update function
+    const { user, login, setUser } = useContext(AuthContext);
     const [searchParams, setSearchParams] = useSearchParams();
     const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'profile');
 
