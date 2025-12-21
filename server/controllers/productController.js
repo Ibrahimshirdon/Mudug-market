@@ -74,9 +74,7 @@ exports.createProduct = async (req, res) => {
 
         res.status(201).json(product);
     } catch (error) {
-        console.error(error);
-        const fs = require('fs');
-        fs.appendFileSync('server_error.log', `${new Date().toISOString()} - ${error.message}\n${error.stack}\n\n`);
+        console.error('SERVER_CREATE_PRODUCT_ERROR:', error);
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
 };
