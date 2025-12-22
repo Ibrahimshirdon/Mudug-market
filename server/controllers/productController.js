@@ -75,7 +75,11 @@ exports.createProduct = async (req, res) => {
         res.status(201).json(product);
     } catch (error) {
         console.error('SERVER_CREATE_PRODUCT_ERROR:', error);
-        res.status(500).json({ message: 'Server Error', error: error.message });
+        res.status(500).json({
+            message: 'Error saving product',
+            details: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 };
 

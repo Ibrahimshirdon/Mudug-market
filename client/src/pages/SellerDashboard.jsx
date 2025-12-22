@@ -288,7 +288,8 @@ const SellerDashboard = () => {
             setShowAddProduct(false);
         } catch (error) {
             console.error(error);
-            toast.error('Error saving product');
+            const message = error.response?.data?.details || error.response?.data?.message || 'Error saving product';
+            toast.error(message);
         }
     };
 

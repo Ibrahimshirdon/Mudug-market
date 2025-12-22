@@ -8,7 +8,22 @@ class Product {
             `INSERT INTO products 
             (shop_id, category_id, name, brand, model, description, price, discount_price, stock, \`condition\`, delivery_info, delivery_fee, is_black_friday, is_out_of_stock) 
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [shop_id, category_id, name, brand, model, description, price, discount_price || null, stock || 0, condition || 'new', delivery_info, delivery_fee || 0, is_black_friday ? 1 : 0, is_out_of_stock ? 1 : 0]
+            [
+                shop_id,
+                category_id || null,
+                name,
+                brand || null,
+                model || null,
+                description || '',
+                price,
+                discount_price || null,
+                stock || 0,
+                condition || 'new',
+                delivery_info || null,
+                delivery_fee || 0,
+                is_black_friday ? 1 : 0,
+                is_out_of_stock ? 1 : 0
+            ]
         );
 
         const productId = result.insertId;
