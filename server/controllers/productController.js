@@ -51,10 +51,34 @@ exports.getProductById = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
     try {
-        console.log('createProduct body:', req.body);
-        console.log('createProduct files:', req.files);
+        console.log('--- PRODUCT CREATION LOG ---');
+        console.log('Raw Body:', req.body);
 
-        const productData = { ...req.body };
+        const {
+            shop_id, category_id, name, brand, model, description, price,
+            discount_price, stock, condition, delivery_info, delivery_fee,
+            is_black_friday, is_out_of_stock
+        } = req.body;
+
+        const productData = {
+            shop_id: parseInt(shop_id),
+            category_id: category_id ? parseInt(category_id) : null,
+            name,
+            brand: brand || null,
+            model: model || null,
+            description: description || '',
+            price: parseFloat(price),
+            discount_price: discount_price ? parseFloat(discount_price) : null,
+            stock: parseInt(stock) || 0,
+            condition: condition || 'new',
+            delivery_info: delivery_info || null,
+            delivery_fee: delivery_fee ? parseFloat(delivery_fee) : 0,
+            is_black_friday: is_black_friday === '1' || is_black_friday === 1 || is_black_friday === true || is_black_friday === 'true',
+            is_out_of_stock: is_out_of_stock === '1' || is_out_of_stock === 1 || is_out_of_stock === true || is_out_of_stock === 'true',
+            images: []
+        };
+
+        console.log('Normalized Data:', productData);
 
         // Handle multiple images
         if (req.files && req.files.length > 0) {
@@ -62,9 +86,11 @@ exports.createProduct = async (req, res) => {
                 image_url: `/uploads/${file.filename}`,
                 display_order: index
             }));
+            console.log('Images to add:', productData.images.length);
         }
 
         const product = await Product.create(productData);
+        console.log('Product created successfully:', product.id);
 
         await ActivityLog.create({
             user_id: req.user.id,

@@ -60,6 +60,15 @@ app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+    console.error('GLOBAL_ERROR_HANDLER:', err);
+    res.status(err.status || 500).json({
+        message: err.message || 'Internal Server Error',
+        details: err.code || err.name || 'Unknown error occurred'
+    });
+});
+
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
