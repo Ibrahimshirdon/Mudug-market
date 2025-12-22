@@ -130,8 +130,8 @@ const SellerDashboard = () => {
 
             const { data } = await axios.post(`${API_URL}/api/shops`, formData, config);
             setShop(data);
-            // Force reload to ensure state is consistent and "Pending" screen persists
-            window.location.reload();
+            toast.success('Shop created! Waiting for approval.');
+            // Removed window.location.reload() to prevent Vercel 404
         } catch (error) {
             console.error(error);
             toast.error(error.response?.data?.message || 'Error creating shop');
@@ -1091,7 +1091,8 @@ const SellerDashboard = () => {
                                                             const config = { headers: { Authorization: `Bearer ${user.token}` } };
                                                             await axios.delete(`${API_URL}/api/shops/my-shop`, config);
                                                             toast.success('Shop deleted successfully.');
-                                                            window.location.reload();
+                                                            setShop(null);
+                                                            navigate('/');
                                                         } catch (error) {
                                                             console.error(error);
                                                             toast.error('Failed to delete shop.');
