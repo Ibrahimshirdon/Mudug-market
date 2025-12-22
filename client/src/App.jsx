@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import SupportPopup from './components/SupportPopup';
@@ -49,6 +49,10 @@ function AppContent() {
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/help" element={<Help />} />
+
+                    {/* Catch all invalid routes and redirections */}
+                    <Route path="/dashboard" element={<Navigate to="/seller/dashboard" replace />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </main>
             {showFooter && <Footer />}
