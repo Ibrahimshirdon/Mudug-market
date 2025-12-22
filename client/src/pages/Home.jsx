@@ -38,11 +38,12 @@ const Home = () => {
                 axios.get(`${API_URL}/api/shops`)
             ]);
 
-            setProducts(productsRes.data);
-            setFilteredProducts(productsRes.data);
+            setProducts(Array.isArray(productsRes.data) ? productsRes.data : []);
+            setFilteredProducts(Array.isArray(productsRes.data) ? productsRes.data : []);
 
             // Extract unique categories
-            const uniqueCategories = [...new Set(productsRes.data.map(p => p.category_id?.name).filter(Boolean))];
+            const prodList = Array.isArray(productsRes.data) ? productsRes.data : [];
+            const uniqueCategories = [...new Set(prodList.map(p => p.category_id?.name).filter(Boolean))];
             setCategories(uniqueCategories);
 
             // Get featured shops (active shops, limited to 4)
@@ -210,7 +211,7 @@ const Home = () => {
                             <FaTags className={`text-3xl mb-3 transition-transform group-hover:scale-110 ${!filters.category ? 'animate-bounce' : ''}`} />
                             <span className="font-bold">All</span>
                         </button>
-                        {categories.map((cat, idx) => (
+                        {Array.isArray(categories) && categories.map((cat, idx) => (
                             <button
                                 key={idx}
                                 onClick={() => handleFilterChange('category', cat)}
@@ -240,7 +241,7 @@ const Home = () => {
                         </button>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                        {featuredShops.map(shop => (
+                        {Array.isArray(featuredShops) && featuredShops.map(shop => (
                             <a href={`/shop/${shop.id}`} key={shop.id} className="group block bg-gradient-to-br from-gray-50 to-white hover:from-primary-50 hover:to-secondary-50 border-2 border-gray-100 hover:border-primary-300 rounded-3xl p-6 transition-all duration-500 hover:shadow-xl text-center transform hover:-translate-y-2">
                                 <div className="w-24 h-24 mx-auto mb-4 relative">
                                     <img
@@ -285,7 +286,7 @@ const Home = () => {
 
                 {filteredProducts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {filteredProducts.map((product, index) => (
+                        {Array.isArray(filteredProducts) && filteredProducts.map((product, index) => (
                             <div key={product.id} className="transform hover:-translate-y-1 transition-transform duration-300">
                                 <ProductCard product={product} />
                             </div>

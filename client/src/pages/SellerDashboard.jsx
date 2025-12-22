@@ -592,10 +592,10 @@ const SellerDashboard = () => {
                             <div
                                 onClick={async () => {
                                     try {
-                                        const { data } = await axios.get('${API_URL}/api/shops/my-shop/stats', {
+                                        const { data } = await axios.get(`${API_URL}/api/shops/my-shop/stats`, {
                                             headers: { Authorization: `Bearer ${user.token}` }
                                         });
-                                        setStats(data);
+                                        setStats(Array.isArray(data) ? data : []);
                                         setShowStatsModal(true);
                                     } catch (err) {
                                         console.error(err);
@@ -629,11 +629,11 @@ const SellerDashboard = () => {
                             </div>
 
                             <div className="h-64 flex items-end justify-between gap-2 border-b border-gray-200 pb-2">
-                                {stats.length === 0 ? (
+                                {(!Array.isArray(stats) || stats.length === 0) ? (
                                     <div className="w-full text-center text-gray-400">No data available for the last 7 days</div>
                                 ) : (
                                     stats.map((stat, idx) => {
-                                        const max = Math.max(...stats.map(s => s.count), 1); // Avoid div by zero
+                                        const max = Math.max(...(Array.isArray(stats) ? stats.map(s => s.count || 0) : [1]), 1); // Avoid div by zero
                                         const height = (stat.count / max) * 100;
                                         return (
                                             <div key={idx} className="flex-1 flex flex-col justify-end items-center group relative">
@@ -777,7 +777,7 @@ const SellerDashboard = () => {
 
                                                     <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
                                                     <select className="w-full p-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all" value={newProduct.category_id} onChange={e => setNewProduct({ ...newProduct, category_id: e.target.value })}>
-                                                        {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
+                                                        {Array.isArray(categories) && categories.map(cat => <option key={cat.id} value={cat.id}>{cat.name}</option>)}
                                                     </select>
                                                 </div>
                                             </div>
@@ -824,7 +824,7 @@ const SellerDashboard = () => {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {filteredProducts.map(p => (
+                                {Array.isArray(filteredProducts) && filteredProducts.map(p => (
                                     <div key={p.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-lg transition-all duration-300">
                                         <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
                                             {p.images && p.images.length > 0 ? (
