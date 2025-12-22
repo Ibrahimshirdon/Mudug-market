@@ -93,6 +93,9 @@ const SellerDashboard = () => {
                         // Get Categories
                         const { data: catData } = await axios.get(`${API_URL}/api/categories`);
                         setCategories(catData);
+                        if (Array.isArray(catData) && catData.length > 0) {
+                            setNewProduct(prev => ({ ...prev, category_id: catData[0].id }));
+                        }
                     }
                 } catch (err) {
                     // No shop found
