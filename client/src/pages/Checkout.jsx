@@ -238,7 +238,7 @@ const Checkout = () => {
                                     <div className="flex items-center gap-2">
                                         <div className="w-10 h-10 rounded bg-gray-50 overflow-hidden text-xs">
                                             <img
-                                                src={item.product.images && item.product.images.length > 0 ? (item.product.images[0].image_url.startsWith('http') ? item.product.images[0].image_url : `${API_URL}${item.product.images[0].image_url}`) : 'https://via.placeholder.com/150'}
+                                                src={item.product.images && item.product.images.length > 0 ? (item.product.images[0].image_url.startsWith('http') ? item.product.images[0].image_url : `${API_URL}${item.product.images[0].image_url}`) : 'https://placehold.co/150'}
                                                 alt={item.product.name}
                                                 className="w-full h-full object-cover"
                                             />

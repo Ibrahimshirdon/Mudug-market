@@ -33,7 +33,7 @@ const Cart = () => {
                                 {/* Product Image */}
                                 <div className="w-24 h-24 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden">
                                     <img
-                                        src={item.product.images && item.product.images.length > 0 ? (item.product.images[0].image_url.startsWith('http') ? item.product.images[0].image_url : `${API_URL}${item.product.images[0].image_url}`) : 'https://via.placeholder.com/150'}
+                                        src={item.product.images && item.product.images.length > 0 ? (item.product.images[0].image_url.startsWith('http') ? item.product.images[0].image_url : `${API_URL}${item.product.images[0].image_url}`) : 'https://placehold.co/150'}
                                         alt={item.product.name}
                                         className="w-full h-full object-contain"
                                     />

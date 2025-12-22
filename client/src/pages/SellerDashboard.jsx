@@ -526,10 +526,10 @@ const SellerDashboard = () => {
                 <div className="p-6 border-t border-gray-800 bg-gray-900/50">
                     <div className="flex items-center gap-3">
                         <img
-                            src={shop.logo_url?.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}` || 'https://via.placeholder.com/50'}
+                            src={shop.logo_url?.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}` || 'https://placehold.co/50'}
                             className="w-10 h-10 rounded-full object-cover border border-gray-700 bg-gray-800"
                             alt="Shop Logo"
-                            onError={(e) => e.target.src = 'https://via.placeholder.com/50'}
+                            onError={(e) => e.target.src = 'https://placehold.co/50'}
                         />
                         <div className="flex-1 min-w-0">
                             <p className="font-semibold text-sm truncate text-white">{shop.name}</p>
@@ -566,7 +566,7 @@ const SellerDashboard = () => {
                         {/* Shop Info Card */}
                         <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 flex flex-col md:flex-row items-center md:items-start gap-8">
                             <img
-                                src={shop.logo_url ? (shop.logo_url.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}`) : 'https://via.placeholder.com/150'}
+                                src={shop.logo_url ? (shop.logo_url.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}`) : 'https://placehold.co/150'}
                                 alt={shop.name}
                                 className="w-32 h-32 rounded-2xl object-cover shadow-lg border-4 border-white ring-1 ring-gray-100"
                             />
@@ -964,7 +964,7 @@ const SellerDashboard = () => {
                                                                     src={item.image_url?.startsWith('http') ? item.image_url : `${API_URL}${item.image_url}`}
                                                                     className="w-10 h-10 rounded object-cover bg-gray-100"
                                                                     alt={item.name}
-                                                                    onError={(e) => e.target.src = 'https://via.placeholder.com/40'}
+                                                                    onError={(e) => e.target.src = 'https://placehold.co/40'}
                                                                 />
                                                                 <span className="font-medium text-gray-800">{item.name}</span>
                                                             </td>
@@ -1047,7 +1047,7 @@ const SellerDashboard = () => {
                                                 src={editShopData.logo ? URL.createObjectURL(editShopData.logo) : (shop.logo_url?.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}`)}
                                                 className="w-20 h-20 rounded-full object-cover border border-gray-200"
                                                 alt="Shop Logo"
-                                                onError={(e) => e.target.src = 'https://via.placeholder.com/80'}
+                                                onError={(e) => e.target.src = 'https://placehold.co/80'}
                                             />
                                             <input
                                                 type="file"

@@ -84,7 +84,7 @@ const ShopProfile = () => {
                     <div className="flex flex-col md:flex-row items-center gap-6">
                         <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 flex-shrink-0">
                             <img
-                                src={shop.logo_url ? (shop.logo_url.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}`) : 'https://via.placeholder.com/150?text=Shop+Logo'}
+                                src={shop.logo_url ? (shop.logo_url.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}`) : 'https://placehold.co/150?text=Shop+Logo'}
                                 alt={shop.name}
                                 className="w-full h-full object-cover"
                             />
@@ -233,7 +233,7 @@ const ShopProfile = () => {
                                                 ? (product.first_image.startsWith('http') ? product.first_image : `${API_URL}${product.first_image}`)
                                                 : product.image_url
                                                     ? (product.image_url.startsWith('http') ? product.image_url : `${API_URL}${product.image_url}`)
-                                                    : 'https://via.placeholder.com/300'
+                                                    : 'https://placehold.co/300'
                                     }
                                     alt={product.name}
                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

@@ -245,9 +245,9 @@ const Home = () => {
                             <a href={`/shop/${shop.id}`} key={shop.id} className="group block bg-gradient-to-br from-gray-50 to-white hover:from-primary-50 hover:to-secondary-50 border-2 border-gray-100 hover:border-primary-300 rounded-3xl p-6 transition-all duration-500 hover:shadow-xl text-center transform hover:-translate-y-2">
                                 <div className="w-24 h-24 mx-auto mb-4 relative">
                                     <img
-                                        src={shop.logo_url ? (shop.logo_url.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}`) : 'https://via.placeholder.com/150'}
+                                        src={shop.logo_url ? (shop.logo_url.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}`) : 'https://placehold.co/150'}
                                         className="w-full h-full rounded-full object-cover border-4 border-white shadow-xl group-hover:scale-110 group-hover:shadow-2xl transition-all duration-500"
-                                        onError={(e) => e.target.src = 'https://via.placeholder.com/150'}
+                                        onError={(e) => e.target.src = 'https://placehold.co/150'}
                                     />
                                     <div className="absolute bottom-0 right-0 bg-green-500 w-6 h-6 rounded-full border-4 border-white shadow-lg"></div>
                                 </div>

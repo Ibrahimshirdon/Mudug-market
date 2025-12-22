@@ -47,7 +47,7 @@ const ProductCard = ({ product }) => {
                                 ? (product.images[0].image_url.startsWith('http') ? product.images[0].image_url : `${API_URL}${product.images[0].image_url}`)
                                 : product.image_url
                                     ? (product.image_url.startsWith('http') ? product.image_url : `${API_URL}${product.image_url}`)
-                                    : 'https://via.placeholder.com/400x300?text=No+Image'
+                                    : 'https://placehold.co/400x300?text=No+Image'
                         }
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"

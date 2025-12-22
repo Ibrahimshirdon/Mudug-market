@@ -456,7 +456,7 @@ const AdminDashboard = () => {
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-4">
                                                         <div className="relative">
-                                                            <img src={shop.logo_url?.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}` || 'https://via.placeholder.com/50'} className="w-12 h-12 rounded-xl object-cover border border-gray-100 shadow-sm transition-transform group-hover:scale-105" onError={(e) => e.target.src = 'https://via.placeholder.com/50'} />
+                                                            <img src={shop.logo_url?.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}` || 'https://placehold.co/50'} className="w-12 h-12 rounded-xl object-cover border border-gray-100 shadow-sm transition-transform group-hover:scale-105" onError={(e) => e.target.src = 'https://placehold.co/50'} />
                                                             {shop.status === 'approved' && <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>}
                                                         </div>
                                                         <div>

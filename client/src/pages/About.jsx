@@ -38,7 +38,7 @@ const About = () => {
                         src="/community-marketplace.jpg"
                         alt="Galkacyo Digital Market Community"
                         className="relative rounded-3xl shadow-xl w-full object-cover h-80 md:h-[500px]"
-                        onError={(e) => { e.target.src = 'https://via.placeholder.com/600x400?text=Galkacyo+Marketplace'; }}
+                        onError={(e) => { e.target.src = 'https://placehold.co/600x400?text=Galkacyo+Marketplace'; }}
                     />
                 </div>
             </section>
