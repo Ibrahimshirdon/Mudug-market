@@ -393,7 +393,7 @@ const SellerDashboard = () => {
         );
     }
 
-    if (shop.status === 'pending') {
+    if (shop.status === 'pending' && user.role !== 'admin') {
         return (
             <div className="max-w-3xl mx-auto mt-10 space-y-6">
                 <div className="p-8 bg-yellow-50 rounded-xl border border-yellow-200 text-center">
