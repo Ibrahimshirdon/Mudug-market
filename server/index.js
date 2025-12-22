@@ -3,9 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const compression = require('compression');
 const path = require('path');
-const fs = require('fs');
 const connectDB = require('./config/db');
 
 // Route Imports
@@ -26,12 +24,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Ensure uploads directory exists
-const uploadsDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir);
-}
-
 // Connect to MongoDB
 // Database Init
 // const db = require('./config/db'); // Pool created on load
@@ -43,9 +35,8 @@ app.use(helmet({
     crossOriginResourcePolicy: false,
 }));
 app.use(morgan('dev'));
-app.use(compression());
 
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -60,22 +51,13 @@ app.use('/api/users', userRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 
-// Error Handling Middleware
-app.use((err, req, res, next) => {
-    console.error('GLOBAL_ERROR_HANDLER:', err);
-    res.status(err.status || 500).json({
-        message: err.message || 'Internal Server Error',
-        details: err.code || err.name || 'Unknown error occurred'
-    });
-});
-
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
 const rentScheduler = require('./cron/rentScheduler');
 
-// Start Server
+// Start Server (schema updated: 2025-12-19)
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 

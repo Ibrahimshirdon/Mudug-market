@@ -16,8 +16,8 @@ exports.getUserProfile = async (req, res) => {
             res.status(404).json({ message: 'User not found' });
         }
     } catch (error) {
-        console.error('SERVER_GET_PROFILE_ERROR:', error);
-        res.status(500).json({ message: 'Server Error retrieving profile' });
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
     }
 };
 
@@ -46,10 +46,7 @@ exports.updateUserProfile = async (req, res) => {
             res.status(404).json({ message: 'User not found' });
         }
     } catch (error) {
-        console.error('SERVER_UPDATE_PROFILE_ERROR:', error);
-        res.status(500).json({
-            message: 'Server Error updating profile',
-            error: error.message
-        });
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
     }
 };

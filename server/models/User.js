@@ -1,12 +1,12 @@
 const db = require('../config/db');
 
 class User {
-    static async create({ name, email, password, phone, role, profile_image, otp_code, otp_expires_at }) {
+    static async create({ name, email, password, phone, role, profile_image }) {
         const [result] = await db.execute(
-            'INSERT INTO users (name, email, password, phone, role, profile_image, otp_code, otp_expires_at, is_verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [name, email, password, phone, role || 'user', profile_image || null, otp_code || null, otp_expires_at || null, 0]
+            'INSERT INTO users (name, email, password, phone, role, profile_image) VALUES (?, ?, ?, ?, ?, ?)',
+            [name, email, password, phone, role || 'user', profile_image || null]
         );
-        return { id: result.insertId, name, email, role: role || 'user', is_verified: 0 };
+        return { id: result.insertId, name, email, role: role || 'user' };
     }
 
     static async findByEmail(email) {

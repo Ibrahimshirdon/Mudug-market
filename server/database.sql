@@ -3,8 +3,8 @@
 -- Complete Database Setup Script
 -- ========================================
 
--- Database setup starts below:
-
+CREATE DATABASE IF NOT EXISTS mudug_market;
+USE mudug_market;
 
 -- ========================================
 -- CORE TABLES
@@ -18,12 +18,9 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
     profile_image VARCHAR(255),
-    role ENUM('user', 'shop_owner', 'admin') DEFAULT 'user',
+    role ENUM('buyer', 'seller', 'admin') DEFAULT 'buyer',
     reset_password_token VARCHAR(255),
     reset_password_expires DATETIME,
-    otp_code VARCHAR(6),
-    otp_expires_at DATETIME,
-    is_verified BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -41,7 +38,6 @@ CREATE TABLE IF NOT EXISTS shops (
     subscription_status ENUM('active', 'expired') DEFAULT 'active',
     subscription_expiry DATE,
     balance DECIMAL(10, 2) DEFAULT 0.00,
-    rejection_reason TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -66,11 +62,10 @@ CREATE TABLE IF NOT EXISTS products (
     price DECIMAL(10, 2) NOT NULL,
     discount_price DECIMAL(10, 2),
     stock INT DEFAULT 0,
-    `condition` ENUM('new', 'used', 'refurbished') NOT NULL,
+    `condition` ENUM('new', 'used') NOT NULL,
     delivery_info VARCHAR(255),
     delivery_fee DECIMAL(10, 2),
     is_black_friday BOOLEAN DEFAULT FALSE,
-    is_out_of_stock BOOLEAN DEFAULT FALSE,
     image_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE,
@@ -259,11 +254,23 @@ INSERT IGNORE INTO categories (name, icon) VALUES
 ('Automotive', '🚗'),
 ('Beauty', '💄');
 
-INSERT INTO users (name, email, password, phone, role) 
+-- ========================================
+-- NOTES
+-- ========================================
+-- 1. Run this script to set up the complete database
+-- 2. Make sure MySQL is running before executing
+-- 3. Update .env file with database credentials:
+--    DB_HOST=localhost
+--    DB_USER=root
+--    DB_PASSWORD=your_password
+--    DB_NAME=mudug_market
+-- 4. To create an admin user, register normally then run:
+--    UPDATE users SET role = 'admin' WHERE email = 'your@email.com';
+INSERT INTO  (name, email, password, phone, role) 
 VALUES (
     'ibrahim',
-    'ibrahimshirdon@gmail.com',
-    '$2a$10$abcdefghijklmnopqrstuvwxyz1234567890', -- Placeholder hash
+    'ibrahim@.com',
+    '$2a$10$YourHashedPasswordHere',  -- You'll need to hash this
     '252666251592',
     'admin'
 );

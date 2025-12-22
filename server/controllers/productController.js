@@ -51,34 +51,10 @@ exports.getProductById = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
     try {
-        console.log('--- PRODUCT CREATION LOG ---');
-        console.log('Raw Body:', req.body);
+        console.log('createProduct body:', req.body);
+        console.log('createProduct files:', req.files);
 
-        const {
-            shop_id, category_id, name, brand, model, description, price,
-            discount_price, stock, condition, delivery_info, delivery_fee,
-            is_black_friday, is_out_of_stock
-        } = req.body;
-
-        const productData = {
-            shop_id: parseInt(shop_id),
-            category_id: category_id ? parseInt(category_id) : null,
-            name,
-            brand: brand || null,
-            model: model || null,
-            description: description || '',
-            price: parseFloat(price),
-            discount_price: discount_price ? parseFloat(discount_price) : null,
-            stock: parseInt(stock) || 0,
-            condition: condition || 'new',
-            delivery_info: delivery_info || null,
-            delivery_fee: delivery_fee ? parseFloat(delivery_fee) : 0,
-            is_black_friday: is_black_friday === '1' || is_black_friday === 1 || is_black_friday === true || is_black_friday === 'true',
-            is_out_of_stock: is_out_of_stock === '1' || is_out_of_stock === 1 || is_out_of_stock === true || is_out_of_stock === 'true',
-            images: []
-        };
-
-        console.log('Normalized Data:', productData);
+        const productData = { ...req.body };
 
         // Handle multiple images
         if (req.files && req.files.length > 0) {
@@ -86,11 +62,9 @@ exports.createProduct = async (req, res) => {
                 image_url: `/uploads/${file.filename}`,
                 display_order: index
             }));
-            console.log('Images to add:', productData.images.length);
         }
 
         const product = await Product.create(productData);
-        console.log('Product created successfully:', product.id);
 
         await ActivityLog.create({
             user_id: req.user.id,
@@ -100,12 +74,10 @@ exports.createProduct = async (req, res) => {
 
         res.status(201).json(product);
     } catch (error) {
-        console.error('SERVER_CREATE_PRODUCT_ERROR:', error);
-        res.status(500).json({
-            message: 'Error saving product',
-            details: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
+        console.error(error);
+        const fs = require('fs');
+        fs.appendFileSync('server_error.log', `${new Date().toISOString()} - ${error.message}\n${error.stack}\n\n`);
+        res.status(500).json({ message: 'Server Error', error: error.message });
     }
 };
 
@@ -119,6 +91,12 @@ exports.updateProduct = async (req, res) => {
             name, brand, model, description, price, discount_price, stock,
             condition, category_id, delivery_info, delivery_fee, is_black_friday, is_out_of_stock
         } = req.body;
+
+        const [cols] = await db.execute('DESCRIBE products');
+        console.log('DEBUG: products columns at runtime:', cols.map(c => c.Field));
+
+        console.log('DEBUG: updateProduct body:', req.body);
+        console.log('DEBUG: updateData keys:', Object.keys(updateData));
 
         if (name) updateData.name = name;
         if (brand) updateData.brand = brand;
