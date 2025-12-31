@@ -27,8 +27,8 @@ const Register = () => {
 
         try {
             // Always register as 'buyer' (user role)
-            const data = await register(formData.name, formData.email, formData.password, formData.phone, 'buyer');
-            navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`);
+            await register(formData.name, formData.email, formData.password, formData.phone, 'buyer');
+            navigate('/');
         } catch (error) {
             setError(error.message || 'Registration failed. Email might already be in use.');
         } finally {

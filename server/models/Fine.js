@@ -1,21 +1,25 @@
-const db = require('../config/db');
+const mongoose = require('mongoose');
 
-class Fine {
-    static async create(data) {
-        const { shop_id, amount, reason } = data;
-        await db.execute(
-            'INSERT INTO fines (shop_id, amount, reason) VALUES (?, ?, ?)',
-            [shop_id, amount, reason]
-        );
+const fineSchema = new mongoose.Schema({
+    shop_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Shop',
+        required: true
+    },
+    amount: {
+        type: Number,
+        required: true
+    },
+    reason: String,
+    status: {
+        type: String,
+        enum: ['unpaid', 'paid'],
+        default: 'unpaid'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
+});
 
-    static async find(query) {
-        if (query.shop_id) {
-            const [rows] = await db.execute('SELECT * FROM fines WHERE shop_id = ?', [query.shop_id]);
-            return rows;
-        }
-        return [];
-    }
-}
-
-module.exports = Fine;
+module.exports = mongoose.model('Fine', fineSchema);

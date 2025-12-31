@@ -2,7 +2,7 @@ const Favorite = require('../models/Favorite');
 
 exports.toggleFavorite = async (req, res) => {
     try {
-        const userId = req.user.id;
+        const userId = req.user._id;
         const { productId } = req.body;
 
         const exists = await Favorite.findOne({ user_id: userId, product_id: productId });
@@ -22,13 +22,16 @@ exports.toggleFavorite = async (req, res) => {
 
 exports.getFavorites = async (req, res) => {
     try {
-        const favorites = await Favorite.find({ user_id: req.user.id });
+        const favorites = await Favorite.find({ user_id: req.user._id })
+            .populate({
+                path: 'product_id',
+                populate: { path: 'shop_id', select: 'name logo_url' }
+            });
 
         // Filter out null products (in case product was deleted)
-        const validFavorites = favorites.filter(f => f.product_id);
-
-        // Transform to look like products list
-        const products = validFavorites.map(f => f.product_id);
+        const products = favorites
+            .filter(f => f.product_id)
+            .map(f => f.product_id);
 
         res.json(products);
     } catch (error) {
@@ -39,7 +42,7 @@ exports.getFavorites = async (req, res) => {
 
 exports.checkFavorite = async (req, res) => {
     try {
-        const exists = await Favorite.findOne({ user_id: req.user.id, product_id: req.params.productId });
+        const exists = await Favorite.findOne({ user_id: req.user._id, product_id: req.params.productId });
         res.json({ isFavorite: !!exists });
     } catch (error) {
         console.error(error);

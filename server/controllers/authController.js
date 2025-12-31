@@ -14,38 +14,36 @@ const generateToken = (id) => {
 exports.registerUser = async (req, res) => {
     let { name, email, password, phone, role } = req.body;
 
-    // Fix: Frontend might send 'buyer' or 'seller', but schema expects 'user' or 'shop_owner'
+    // Fix: Frontend might send 'buyer' or 'seller', but schema expects 'user' or 'seller'
     if (role === 'buyer') {
         role = 'user';
     } else if (role === 'seller') {
-        role = 'shop_owner';
+        // Keeping 'seller' as per Mongoose enum if updated, or user if that's the base
+        role = 'seller';
     }
 
     try {
-        const userExists = await User.findByEmail(email);
+        const userExists = await User.findOne({ email });
 
         if (userExists) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
         const user = await User.create({
             name,
             email,
-            password: hashedPassword,
+            password, // Password hashing is handled by User model pre-save hook
             phone,
             role: role || 'user',
         });
 
         res.status(201).json({
-            _id: user.id,
+            _id: user._id,
             name: user.name,
             email: user.email,
             role: user.role,
             profile_image: user.profile_image,
-            token: generateToken(user.id),
+            token: generateToken(user._id),
         });
     } catch (error) {
         console.error(error);
@@ -57,28 +55,28 @@ exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        // Query by email OR name (using the static method I added to User model)
         const user = await User.findByEmailOrName(email);
 
-        if (user && (await bcrypt.compare(password, user.password))) {
+        if (user && (await user.matchPassword(password))) {
             // Log activity
             try {
                 await ActivityLog.create({
-                    user_id: user.id,
+                    user_id: user._id,
                     action: 'LOGIN',
                     details: 'User logged in'
                 });
             } catch (logError) {
                 console.error('Activity Log Error:', logError);
-                // Continue login even if logging fails
             }
 
             res.json({
-                _id: user.id,
+                _id: user._id,
                 name: user.name,
                 email: user.email,
                 role: user.role,
                 profile_image: user.profile_image,
-                token: generateToken(user.id),
+                token: generateToken(user._id),
             });
         } else {
             res.status(401).json({ message: 'Invalid email or password' });
@@ -92,28 +90,23 @@ exports.loginUser = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
     try {
-        const user = await User.findByEmail(email);
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
         // Generate token
         const resetToken = crypto.randomBytes(20).toString('hex');
-        const resetPasswordExpires = new Date(Date.now() + 3600000); // 1 hour
+        user.resetPasswordToken = resetToken;
+        user.resetPasswordExpire = Date.now() + 3600000; // 1 hour
 
-        // Save to DB
-        // Use manual update for these fields as they might be new cols in SQL
-        const [result] = await require('../config/db').execute(
-            'UPDATE users SET reset_password_token = ?, reset_password_expires = ? WHERE id = ?',
-            [resetToken, resetPasswordExpires, user.id]
-        );
+        await user.save({ validateBeforeSave: false });
 
         // Send Email
         const resetUrl = `http://localhost:5173/reset-password/${resetToken}`;
 
-        // Create Transporter (Using a simple config, preferably from ENV)
         const transporter = nodemailer.createTransport({
-            service: 'gmail', // or host/port from env
+            service: 'gmail',
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
@@ -154,27 +147,21 @@ exports.resetPassword = async (req, res) => {
     const { password } = req.body;
 
     try {
-        // Need to query by token and expiry
-        const [rows] = await require('../config/db').execute(
-            'SELECT * FROM users WHERE reset_password_token = ? AND reset_password_expires > NOW()',
-            [token]
-        );
-
-        const user = rows[0];
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpire: { $gt: Date.now() }
+        });
 
         if (!user) {
             return res.status(400).json({ message: 'Password reset token is invalid or has expired' });
         }
 
-        // Hash new password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        // Set new password
+        user.password = password;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
 
-        // Update User
-        await require('../config/db').execute(
-            'UPDATE users SET password = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?',
-            [hashedPassword, user.id]
-        );
+        await user.save();
 
         res.json({ message: 'Password updated successfully' });
 
@@ -188,28 +175,21 @@ exports.changePassword = async (req, res) => {
     const { currentPassword, newPassword } = req.body;
 
     try {
-        // Get user from database
-        const user = await User.findById(req.user.id);
+        const user = await User.findById(req.user.id).select('+password');
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
         // Verify current password
-        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        const isMatch = await user.matchPassword(currentPassword);
         if (!isMatch) {
             return res.status(401).json({ message: 'Current password is incorrect' });
         }
 
-        // Hash new password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(newPassword, salt);
-
-        // Update password
-        await require('../config/db').execute(
-            'UPDATE users SET password = ? WHERE id = ?',
-            [hashedPassword, user.id]
-        );
+        // Set new password
+        user.password = newPassword;
+        await user.save();
 
         res.json({ message: 'Password updated successfully' });
 

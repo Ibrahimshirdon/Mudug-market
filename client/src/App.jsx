@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import SupportPopup from './components/SupportPopup';
@@ -13,7 +13,6 @@ import AdminDashboard from './pages/AdminDashboard';
 import ShopProfile from './pages/ShopProfile';
 import Favorites from './pages/Favorites';
 import UserProfile from './pages/UserProfile';
-import VerifyOTP from './pages/VerifyOTP';
 
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -36,7 +35,6 @@ function AppContent() {
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/verify-otp" element={<VerifyOTP />} />
                     <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/reset-password/:token" element={<ResetPassword />} />
                     <Route path="/product/:id" element={<ProductDetails />} />
@@ -49,10 +47,6 @@ function AppContent() {
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/help" element={<Help />} />
-
-                    {/* Catch all invalid routes and redirections */}
-                    <Route path="/dashboard" element={<Navigate to="/seller/dashboard" replace />} />
-                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </main>
             {showFooter && <Footer />}

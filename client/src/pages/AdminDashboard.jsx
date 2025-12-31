@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import API_URL from '../api.config';
+import api, { imageBaseUrl } from '../api/axios';
 import AuthContext from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { FaStore, FaUsers, FaClipboardList, FaChartLine, FaHistory, FaExternalLinkAlt, FaCheck, FaTimes, FaTrash, FaBan, FaUnlock, FaMoneyBillWave } from 'react-icons/fa';
@@ -32,18 +31,14 @@ const AdminDashboard = () => {
 
         const fetchData = async () => {
             try {
-                const config = {
-                    headers: { Authorization: `Bearer ${user.token}` }
-                };
-
                 const [analyticsRes, usersRes, pendingShopsRes, allShopsRes, reportsRes, logsRes, transactionsRes] = await Promise.all([
-                    axios.get(`${API_URL}/api/admin/analytics`, config),
-                    axios.get(`${API_URL}/api/admin/users`, config),
-                    axios.get(`${API_URL}/api/shops?status=pending`, config),
-                    axios.get(`${API_URL}/api/shops`, config),
-                    axios.get(`${API_URL}/api/reports`, config),
-                    axios.get(`${API_URL}/api/admin/logs`, config),
-                    axios.get(`${API_URL}/api/admin/transactions`, config)
+                    api.get('/admin/analytics'),
+                    api.get('/admin/users'),
+                    api.get('/shops?status=pending'),
+                    api.get('/shops'),
+                    api.get('/reports'),
+                    api.get('/admin/logs'),
+                    api.get('/admin/transactions')
                 ]);
 
                 setAnalytics(analyticsRes.data);
@@ -67,10 +62,9 @@ const AdminDashboard = () => {
 
     const handleApproveShop = async (shopId) => {
         try {
-            const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put(`${API_URL}/api/shops/${shopId}/status`, { status: 'approved' }, config);
-            setPendingShops(pendingShops.filter(s => s.id !== shopId));
-            setAllShops(allShops.map(s => s.id === shopId ? { ...s, status: 'approved' } : s));
+            await api.put(`/shops/${shopId}/status`, { status: 'approved' });
+            setPendingShops(pendingShops.filter(s => (s._id || s.id) !== shopId));
+            setAllShops(allShops.map(s => (s._id || s.id) === shopId ? { ...s, status: 'approved' } : s));
             toast.success('Shop approved successfully');
         } catch (error) {
             toast.error('Error approving shop');
@@ -80,10 +74,9 @@ const AdminDashboard = () => {
     const handleRejectShop = async (shopId) => {
         if (!window.confirm('Are you sure you want to reject this shop?')) return;
         try {
-            const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put(`${API_URL}/api/shops/${shopId}/status`, { status: 'rejected' }, config);
-            setPendingShops(pendingShops.filter(s => s.id !== shopId));
-            setAllShops(allShops.map(s => s.id === shopId ? { ...s, status: 'rejected' } : s));
+            await api.put(`/shops/${shopId}/status`, { status: 'rejected' });
+            setPendingShops(pendingShops.filter(s => (s._id || s.id) !== shopId));
+            setAllShops(allShops.map(s => (s._id || s.id) === shopId ? { ...s, status: 'rejected' } : s));
             toast.success('Shop rejected');
         } catch (error) {
             toast.error('Error rejecting shop');
@@ -93,9 +86,8 @@ const AdminDashboard = () => {
     const handleDeactivateShop = async (shopId) => {
         if (!window.confirm('Are you sure you want to deactivate this shop?')) return;
         try {
-            const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put(`${API_URL}/api/admin/shops/${shopId}/deactivate`, {}, config);
-            setAllShops(allShops.map(s => s.id === shopId ? { ...s, status: 'deactivated' } : s));
+            await api.put(`/admin/shops/${shopId}/deactivate`, {});
+            setAllShops(allShops.map(s => (s._id || s.id) === shopId ? { ...s, status: 'deactivated' } : s));
             toast.success('Shop deactivated successfully');
         } catch (error) {
             toast.error('Error deactivating shop');
@@ -105,9 +97,8 @@ const AdminDashboard = () => {
     const handleActivateShop = async (shopId) => {
         if (!window.confirm('Are you sure you want to activate this shop?')) return;
         try {
-            const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put(`${API_URL}/api/admin/shops/${shopId}/activate`, {}, config);
-            setAllShops(allShops.map(s => s.id === shopId ? { ...s, status: 'approved' } : s));
+            await api.put(`/admin/shops/${shopId}/activate`, {});
+            setAllShops(allShops.map(s => (s._id || s.id) === shopId ? { ...s, status: 'approved' } : s));
             toast.success('Shop activated successfully');
         } catch (error) {
             toast.error('Error activating shop');
@@ -117,12 +108,8 @@ const AdminDashboard = () => {
     const handleDeleteShop = async (shopId) => {
         if (!window.confirm('Are you sure you want to delete this shop? This action cannot be undone.')) return;
         try {
-            const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            // Use the new admin delete route
-            await axios.delete(`${API_URL}/api/shops/${shopId}`, config);
-
-            // Immediately update the UI
-            setAllShops(allShops.filter(s => s.id !== shopId));
+            await api.delete(`/shops/${shopId}`);
+            setAllShops(allShops.filter(s => (s._id || s.id) !== shopId));
             toast.success('Shop deleted successfully');
         } catch (error) {
             console.error(error);
@@ -132,9 +119,8 @@ const AdminDashboard = () => {
 
     const handleReportStatus = async (reportId, status) => {
         try {
-            const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.put(`${API_URL}/api/reports/${reportId}/status`, { status }, config);
-            setReports(reports.map(r => r.id === reportId ? { ...r, status } : r));
+            await api.put(`/reports/${reportId}/status`, { status });
+            setReports(reports.map(r => (r._id || r.id) === reportId ? { ...r, status } : r));
             toast.success(`Report marked as ${status}`);
         } catch (error) {
             toast.error('Error updating report status');
@@ -144,9 +130,8 @@ const AdminDashboard = () => {
     const handleDeleteUser = async (userId) => {
         if (!window.confirm('Are you sure you want to delete this user?')) return;
         try {
-            const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.delete(`${API_URL}/api/admin/users/${userId}`, config);
-            setUsers(users.filter(u => u.id !== userId));
+            await api.delete(`/admin/users/${userId}`);
+            setUsers(users.filter(u => (u._id || u.id) !== userId));
             toast.success('User deleted successfully');
         } catch (error) {
             toast.error('Error deleting user');
@@ -157,16 +142,13 @@ const AdminDashboard = () => {
         const amount = prompt("Enter amount to add (e.g., 10 for $10 deposit, -10 for withdrawal):");
         if (amount) {
             try {
-                const config = {
-                    headers: { Authorization: `Bearer ${user.token}` }
-                };
-                await axios.post(`${API_URL}/api/admin/shops/${shopId}/balance`, { amount }, config);
+                await api.post(`/admin/shops/${shopId}/balance`, { amount });
                 toast.success('Balance updated successfully');
                 // Refresh Data
-                const shopsRes = await axios.get(`${API_URL}/api/shops`, config);
-                const transRes = await axios.get(`${API_URL}/api/admin/transactions`, config);
-                setAllShops(shopsRes.data);
-                setTransactions(transRes.data);
+                const { data: shopsData } = await api.get('/shops');
+                const { data: transData } = await api.get('/admin/transactions');
+                setAllShops(shopsData);
+                setTransactions(transData);
             } catch (error) {
                 console.error(error);
                 toast.error('Failed to update balance');
@@ -366,17 +348,17 @@ const AdminDashboard = () => {
                                     ) : (
                                         <div className="space-y-4">
                                             {pendingShops.slice(0, 3).map(shop => (
-                                                <div key={shop.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                                                <div key={shop._id || shop.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                                                     <div className="flex items-center gap-3">
-                                                        {shop.logo_url ? <img src={shop.logo_url} className="w-10 h-10 rounded-full object-cover" /> : <div className="w-10 h-10 bg-gray-200 rounded-full"></div>}
+                                                        {shop.logo_url ? <img src={shop.logo_url.startsWith('http') ? shop.logo_url : `${imageBaseUrl}${shop.logo_url}`} className="w-10 h-10 rounded-full object-cover" /> : <div className="w-10 h-10 bg-gray-200 rounded-full"></div>}
                                                         <div>
                                                             <p className="font-bold text-gray-800">{shop.name}</p>
                                                             <p className="text-xs text-gray-500">{shop.owner_name} • {shop.location}</p>
                                                         </div>
                                                     </div>
                                                     <div className="flex gap-2">
-                                                        <button onClick={() => handleApproveShop(shop.id)} className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200"><FaCheck /></button>
-                                                        <button onClick={() => handleRejectShop(shop.id)} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200"><FaTimes /></button>
+                                                        <button onClick={() => handleApproveShop(shop._id || shop.id)} className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200"><FaCheck /></button>
+                                                        <button onClick={() => handleRejectShop(shop._id || shop.id)} className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200"><FaTimes /></button>
                                                     </div>
                                                 </div>
                                             ))}
@@ -399,7 +381,7 @@ const AdminDashboard = () => {
                                     ) : (
                                         <div className="space-y-4">
                                             {reports.slice(0, 3).map(report => (
-                                                <div key={report.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                                                <div key={report._id || report.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                                                     <div>
                                                         <p className="font-bold text-gray-800 text-sm">{report.shop_name}</p>
                                                         <p className="text-xs text-red-500 font-medium">{report.reason}</p>
@@ -452,11 +434,11 @@ const AdminDashboard = () => {
                                     </thead>
                                     <tbody className="divide-y divide-gray-50">
                                         {filteredShops.map(shop => (
-                                            <tr key={shop.id} className="hover:bg-indigo-50/30 transition-colors group">
+                                            <tr key={shop._id || shop.id} className="hover:bg-indigo-50/30 transition-colors group">
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-4">
                                                         <div className="relative">
-                                                            <img src={shop.logo_url?.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}` || 'https://placehold.co/50'} className="w-12 h-12 rounded-xl object-cover border border-gray-100 shadow-sm transition-transform group-hover:scale-105" onError={(e) => e.target.src = 'https://placehold.co/50'} />
+                                                            <img src={shop.logo_url?.startsWith('http') ? shop.logo_url : `http://localhost:5000${shop.logo_url}` || 'https://via.placeholder.com/50'} className="w-12 h-12 rounded-xl object-cover border border-gray-100 shadow-sm transition-transform group-hover:scale-105" onError={(e) => e.target.src = 'https://via.placeholder.com/50'} />
                                                             {shop.status === 'approved' && <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>}
                                                         </div>
                                                         <div>
@@ -490,7 +472,7 @@ const AdminDashboard = () => {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     {shop.status === 'approved' ? (
-                                                        <a href={`/shop/${shop.id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium hover:underline">
+                                                        <a href={`/shop/${shop._id || shop.id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium hover:underline">
                                                             Visit <FaExternalLinkAlt className="text-xs" />
                                                         </a>
                                                     ) : <span className="text-gray-400 text-sm">-</span>}
@@ -499,23 +481,23 @@ const AdminDashboard = () => {
                                                     <div className="flex justify-end gap-2 opacity-80 group-hover:opacity-100 transition-opacity">
                                                         {shop.status === 'pending' && (
                                                             <>
-                                                                <button onClick={() => handleApproveShop(shop.id)} className="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 hover:scale-105 transition-all shadow-sm" title="Approve"><FaCheck /></button>
-                                                                <button onClick={() => handleRejectShop(shop.id)} className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 hover:scale-105 transition-all shadow-sm" title="Reject"><FaTimes /></button>
+                                                                <button onClick={() => handleApproveShop(shop._id || shop.id)} className="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 hover:scale-105 transition-all shadow-sm" title="Approve"><FaCheck /></button>
+                                                                <button onClick={() => handleRejectShop(shop._id || shop.id)} className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 hover:scale-105 transition-all shadow-sm" title="Reject"><FaTimes /></button>
                                                             </>
                                                         )}
                                                         {shop.status === 'approved' && (
                                                             <>
-                                                                <button onClick={() => handleAddFunds(shop.id)} className="p-2 text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 hover:scale-105 transition-all shadow-sm" title="Add Funds"><FaMoneyBillWave /></button>
-                                                                <button onClick={() => handleDeactivateShop(shop.id)} className="p-2 bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 hover:scale-105 transition-all shadow-sm" title="Deactivate"><FaBan /></button>
+                                                                <button onClick={() => handleAddFunds(shop._id || shop.id)} className="p-2 text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 hover:scale-105 transition-all shadow-sm" title="Add Funds"><FaMoneyBillWave /></button>
+                                                                <button onClick={() => handleDeactivateShop(shop._id || shop.id)} className="p-2 bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 hover:scale-105 transition-all shadow-sm" title="Deactivate"><FaBan /></button>
                                                             </>
                                                         )}
                                                         {shop.status === 'deactivated' && (
                                                             <>
-                                                                <button onClick={() => handleAddFunds(shop.id)} className="p-2 text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 hover:scale-105 transition-all shadow-sm" title="Add Funds"><FaMoneyBillWave /></button>
-                                                                <button onClick={() => handleActivateShop(shop.id)} className="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 hover:scale-105 transition-all shadow-sm" title="Activate"><FaUnlock /></button>
+                                                                <button onClick={() => handleAddFunds(shop._id || shop.id)} className="p-2 text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 hover:scale-105 transition-all shadow-sm" title="Add Funds"><FaMoneyBillWave /></button>
+                                                                <button onClick={() => handleActivateShop(shop._id || shop.id)} className="p-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 hover:scale-105 transition-all shadow-sm" title="Activate"><FaUnlock /></button>
                                                             </>
                                                         )}
-                                                        <button onClick={() => handleDeleteShop(shop.id)} className="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 hover:scale-105 transition-all shadow-sm" title="Delete"><FaTrash /></button>
+                                                        <button onClick={() => handleDeleteShop(shop._id || shop.id)} className="p-2 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 hover:scale-105 transition-all shadow-sm" title="Delete"><FaTrash /></button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -545,7 +527,7 @@ const AdminDashboard = () => {
                                 <tbody className="divide-y divide-gray-100">
                                     {transactions.length > 0 ? transactions.map(t => (
                                         <tr key={t.id} className="hover:bg-gray-50">
-                                            <td className="px-6 py-4 text-gray-500">#{t.id}</td>
+                                            <td className="px-6 py-4 text-gray-500">#{t._id || t.id}</td>
                                             <td className="px-6 py-4">
                                                 <span className={`px-3 py-1 rounded-full text-xs font-bold
                                                     ${t.type === 'RENT' ? 'bg-blue-100 text-blue-700' :
@@ -586,11 +568,11 @@ const AdminDashboard = () => {
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
                                     {reports.map(report => (
-                                        <tr key={report.id} className="hover:bg-gray-50">
+                                        <tr key={report._id || report.id} className="hover:bg-gray-50">
                                             <td className="px-6 py-4">
                                                 <p className="font-bold text-gray-900">{report.shop_name}</p>
                                                 <p className="text-sm text-gray-500">Reported by: {report.reporter_name}</p>
-                                                <p className="text-xs text-gray-400 mt-1">{new Date(report.created_at).toLocaleDateString()}</p>
+                                                <p className="text-xs text-gray-400 mt-1">{new Date(report.createdAt || report.created_at).toLocaleDateString()}</p>
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className="font-medium text-red-600 block mb-1">{report.reason}</span>
@@ -604,8 +586,8 @@ const AdminDashboard = () => {
                                             <td className="px-6 py-4 text-right space-x-2">
                                                 {report.status === 'pending' && (
                                                     <>
-                                                        <button onClick={() => handleReportStatus(report.id, 'resolved')} className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm font-medium hover:bg-green-200">Resolve</button>
-                                                        <button onClick={() => handleReportStatus(report.id, 'dismissed')} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">Dismiss</button>
+                                                        <button onClick={() => handleReportStatus(report._id || report.id, 'resolved')} className="px-3 py-1 bg-green-100 text-green-700 rounded-lg text-sm font-medium hover:bg-green-200">Resolve</button>
+                                                        <button onClick={() => handleReportStatus(report._id || report.id, 'dismissed')} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">Dismiss</button>
                                                     </>
                                                 )}
                                             </td>
@@ -647,12 +629,12 @@ const AdminDashboard = () => {
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
                                     {filteredUsers.map(user => (
-                                        <tr key={user.id} className="hover:bg-gray-50">
+                                        <tr key={user._id || user.id} className="hover:bg-gray-50">
                                             <td className="px-6 py-4">
                                                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center text-white font-bold overflow-hidden border border-gray-200 shadow-sm">
                                                     {user.profile_image ? (
                                                         <img
-                                                            src={`${API_URL}${user.profile_image}`}
+                                                            src={`http://localhost:5000${user.profile_image}`}
                                                             alt={user.name}
                                                             className="w-full h-full object-cover"
                                                             onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; e.target.parentNode.innerText = user.name.charAt(0).toUpperCase(); }}
@@ -670,9 +652,9 @@ const AdminDashboard = () => {
                                                         'bg-green-100 text-green-700'
                                                     }`}>{user.role}</span>
                                             </td>
-                                            <td className="px-6 py-4 text-gray-500">{new Date(user.created_at).toLocaleDateString()}</td>
+                                            <td className="px-6 py-4 text-gray-500">{new Date(user.createdAt || user.created_at).toLocaleDateString()}</td>
                                             <td className="px-6 py-4 text-right">
-                                                <button onClick={() => handleDeleteUser(user.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><FaTrash /></button>
+                                                <button onClick={() => handleDeleteUser(user._id || user.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><FaTrash /></button>
                                             </td>
                                         </tr>
                                     ))}
@@ -744,7 +726,7 @@ const AdminDashboard = () => {
                                     <tbody className="divide-y divide-gray-100">
                                         {logs.filter(l => (l.user_name || 'System') === selectedLogUser).map(log => (
                                             <tr key={log.id} className="hover:bg-gray-50">
-                                                <td className="px-6 py-4 text-gray-500 text-sm">{new Date(log.created_at).toLocaleString()}</td>
+                                                <td className="px-6 py-4 text-gray-500 text-sm">{new Date(log.createdAt || log.created_at).toLocaleString()}</td>
                                                 <td className="px-6 py-4">
                                                     <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-bold uppercase">{log.action}</span>
                                                 </td>

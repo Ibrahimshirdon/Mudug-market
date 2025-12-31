@@ -25,16 +25,34 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
-// Database Init
-// const db = require('./config/db'); // Pool created on load
+connectDB();
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    process.env.CLIENT_URL
+].filter(Boolean);
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 app.use(helmet({
     crossOriginResourcePolicy: false,
+    contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false,
 }));
-app.use(morgan('dev'));
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -57,7 +75,7 @@ app.get('/', (req, res) => {
 
 const rentScheduler = require('./cron/rentScheduler');
 
-// Start Server (schema updated: 2025-12-19)
+// Start Server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 

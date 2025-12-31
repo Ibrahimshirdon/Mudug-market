@@ -1,25 +1,28 @@
-const db = require('../config/db');
+const mongoose = require('mongoose');
 
-class OrderItem {
-    static async create(data) {
-        const { order_id, product_id, quantity, price } = data;
-        await db.execute(
-            'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)',
-            [order_id, product_id, quantity, price]
-        );
+const orderItemSchema = new mongoose.Schema({
+    order_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order',
+        required: true
+    },
+    product_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true
+    },
+    quantity: {
+        type: Number,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
+});
 
-    static async findByOrderId(orderId) {
-        const [rows] = await db.execute(`
-            SELECT OI.*, P.name, 
-            (SELECT image_url FROM product_images WHERE product_id = P.id ORDER BY display_order ASC LIMIT 1) as image_url
-            FROM order_items OI
-            JOIN products P ON OI.product_id = P.id
-            WHERE OI.order_id = ?
-        `, [orderId]);
-        // Handle image_url logic in controller or frontend, ensuring consistency
-        return rows;
-    }
-}
-
-module.exports = OrderItem;
+module.exports = mongoose.model('OrderItem', orderItemSchema);

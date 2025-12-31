@@ -1,27 +1,22 @@
-const db = require('../config/db');
+const mongoose = require('mongoose');
 
-class Category {
-    static async find(query = {}) {
-        const [rows] = await db.execute('SELECT * FROM categories ORDER BY name ASC');
-        return rows;
+const categorySchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, 'Please add a category name'],
+        unique: true,
+        trim: true
+    },
+    image_url: String,
+    icon: String,
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
+});
 
-    static async create(data) {
-        const { name, image_url, icon } = data;
-        const [result] = await db.execute(
-            'INSERT INTO categories (name, image_url, icon) VALUES (?, ?, ?)',
-            [name, image_url, icon]
-        );
-        return { id: result.insertId, ...data };
-    }
-
-    static async findOne(query) {
-        if (query.name) {
-            const [rows] = await db.execute('SELECT * FROM categories WHERE name = ?', [query.name]);
-            return rows[0];
-        }
-        return null;
-    }
-}
-
-module.exports = Category;
+module.exports = mongoose.model('Category', categorySchema);

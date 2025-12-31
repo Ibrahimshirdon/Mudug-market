@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import axios from 'axios';
-import API_URL from '../api.config';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FaLock, FaSpinner } from 'react-icons/fa';
 
@@ -26,7 +25,7 @@ const ResetPassword = () => {
         setError('');
 
         try {
-            await axios.post(`${API_URL}/api/auth/reset-password/${token}`, { password });
+            await axios.post(`http://localhost:5000/api/auth/reset-password/${token}`, { password });
             setMessage('Password reset successful! Redirecting to login...');
             setTimeout(() => navigate('/login'), 2000);
         } catch (error) {

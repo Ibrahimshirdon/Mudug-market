@@ -9,7 +9,7 @@ const Product = require('../models/Product');
 
 exports.getTransactions = async (req, res) => {
     try {
-        const transactions = await Transaction.find();
+        const transactions = await Transaction.find().populate('shop_id', 'name').sort('-createdAt');
         res.json(transactions);
     } catch (error) {
         console.error(error);
@@ -20,14 +20,14 @@ exports.getTransactions = async (req, res) => {
 exports.adjustShopBalance = async (req, res) => {
     try {
         const { shopId } = req.params;
-        const { amount, description } = req.body; // Amount can be positive (Deposit) or negative (Withdrawal)
+        const { amount, description } = req.body;
 
         if (!amount || isNaN(amount)) {
             return res.status(400).json({ message: 'Invalid amount' });
         }
 
         const numAmount = Number(amount);
-        const type = numAmount >= 0 ? 'DEPOSIT' : 'WITHDRAWAL';
+        const type = numAmount >= 0 ? 'credit' : 'debit';
 
         // 1. Update Shop Balance
         const shop = await Shop.findByIdAndUpdate(shopId, { $inc: { balance: numAmount } }, { new: true });
@@ -39,7 +39,7 @@ exports.adjustShopBalance = async (req, res) => {
         // 2. Create Transaction Record
         await Transaction.create({
             shop_id: shopId,
-            amount: Math.abs(numAmount), // Store positive magnitude
+            amount: Math.abs(numAmount),
             type: type,
             description: description || 'Manual Adjustment by Admin'
         });
@@ -54,20 +54,15 @@ exports.adjustShopBalance = async (req, res) => {
 exports.getAnalytics = async (req, res) => {
     try {
         const totalUsers = await User.countDocuments();
-        const totalShops = await Shop.countDocuments();
-        const totalProducts = await Product.countDocuments();
-        // contact_clicks table logic? It wasn't in list_dir output models. 
-        // If it was a raw table, I need to check if it's critical. 
-        // Assuming it's less critical or I should make a model if I see it.
-        // For now, returning 0 or checking if I missed a model.
-        // Let's assume 0 if no model exists.
-        const totalClicks = 0;
+        const totalShops = await Shop.countDocuments({ is_active: true });
+        const totalProducts = await Product.countDocuments({ is_active: true });
+        const totalBalance = await Shop.aggregate([{ $group: { _id: null, total: { $sum: "$balance" } } }]);
 
         res.json({
             totalUsers,
             totalShops,
             totalProducts,
-            totalClicks
+            totalBalance: totalBalance.length > 0 ? totalBalance[0].total : 0
         });
     } catch (error) {
         console.error(error);
@@ -77,7 +72,7 @@ exports.getAnalytics = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await User.find().sort('-createdAt');
         res.json(users);
     } catch (error) {
         console.error(error);
@@ -90,7 +85,7 @@ exports.deleteUser = async (req, res) => {
         await User.findByIdAndDelete(req.params.id);
 
         await ActivityLog.create({
-            user_id: req.user.id,
+            user_id: req.user._id,
             action: 'DELETE_USER',
             details: `Deleted user ID: ${req.params.id}`
         });
@@ -104,7 +99,7 @@ exports.deleteUser = async (req, res) => {
 
 exports.getLogs = async (req, res) => {
     try {
-        const logs = await ActivityLog.find();
+        const logs = await ActivityLog.find().populate('user_id', 'name email').sort('-createdAt');
         res.json(logs);
     } catch (error) {
         console.error(error);
@@ -114,15 +109,19 @@ exports.getLogs = async (req, res) => {
 
 exports.deleteShop = async (req, res) => {
     try {
-        await Shop.findByIdAndDelete(req.params.id);
+        const shop = await Shop.findById(req.params.id);
+        if (!shop) return res.status(404).json({ message: 'Shop not found' });
+
+        shop.is_active = false;
+        await shop.save();
 
         await ActivityLog.create({
-            user_id: req.user.id,
-            action: 'DELETE_SHOP',
-            details: `Deleted shop ID: ${req.params.id}`
+            user_id: req.user._id,
+            action: 'DEACTIVATE_SHOP_ADMIN',
+            details: `Admin deactivated shop ID: ${req.params.id}`
         });
 
-        res.json({ message: 'Shop deleted' });
+        res.json({ message: 'Shop deactivated' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server Error' });
@@ -133,19 +132,12 @@ exports.deactivateShop = async (req, res) => {
     try {
         const shopId = req.params.id;
 
-        // Update Shop Status
         const shop = await Shop.findByIdAndUpdate(shopId, { status: 'deactivated' }, { new: true });
-
         if (!shop) return res.status(404).json({ message: 'Shop not found' });
-
-        // Calculate stats
-        const fines = await Fine.find({ shop_id: shopId });
-        const totalFines = fines.reduce((sum, fine) => sum + Number(fine.amount), 0);
 
         const resolvedReports = await Report.countDocuments({ shop_id: shopId, status: 'resolved' });
 
-        // Send notification
-        const message = `Your shop "${shop.name}" has been deactivated due to policy violations. Total Resolved Reports: ${resolvedReports}. Total Fines Discharged: $${totalFines.toFixed(2)}. Please contact support for more information.`;
+        const message = `Your shop "${shop.name}" has been deactivated due to policy violations. Total Resolved Reports: ${resolvedReports}. Please contact support for more information.`;
 
         await Notification.create({
             user_id: shop.owner_id,
@@ -153,7 +145,7 @@ exports.deactivateShop = async (req, res) => {
         });
 
         await ActivityLog.create({
-            user_id: req.user.id,
+            user_id: req.user._id,
             action: 'DEACTIVATE_SHOP',
             details: `Deactivated shop ID: ${shopId}. Notified owner.`
         });
@@ -170,7 +162,7 @@ exports.activateShop = async (req, res) => {
         await Shop.findByIdAndUpdate(req.params.id, { status: 'approved' });
 
         await ActivityLog.create({
-            user_id: req.user.id,
+            user_id: req.user._id,
             action: 'ACTIVATE_SHOP',
             details: `Activated shop ID: ${req.params.id}`
         });

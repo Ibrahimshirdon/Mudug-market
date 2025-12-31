@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
-import API_URL from '../api.config';
+import api, { imageBaseUrl } from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import ProductCard from '../components/ProductCard';
@@ -22,6 +21,8 @@ const Home = () => {
         sort: ''
     });
 
+
+
     useEffect(() => {
         fetchData();
     }, []);
@@ -34,16 +35,15 @@ const Home = () => {
         try {
             setLoading(true);
             const [productsRes, shopsRes] = await Promise.all([
-                axios.get(`${API_URL}/api/products`),
-                axios.get(`${API_URL}/api/shops`)
+                api.get('/products'),
+                api.get('/shops')
             ]);
 
-            setProducts(Array.isArray(productsRes.data) ? productsRes.data : []);
-            setFilteredProducts(Array.isArray(productsRes.data) ? productsRes.data : []);
+            setProducts(productsRes.data);
+            setFilteredProducts(productsRes.data);
 
             // Extract unique categories
-            const prodList = Array.isArray(productsRes.data) ? productsRes.data : [];
-            const uniqueCategories = [...new Set(prodList.map(p => p.category_id?.name).filter(Boolean))];
+            const uniqueCategories = [...new Set(productsRes.data.map(p => p.category_id?.name).filter(Boolean))];
             setCategories(uniqueCategories);
 
             // Get featured shops (active shops, limited to 4)
@@ -83,7 +83,7 @@ const Home = () => {
         } else if (filters.sort === 'price_desc') {
             filtered.sort((a, b) => b.price - a.price);
         } else if (filters.sort === 'newest') {
-            filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         }
 
         setFilteredProducts(filtered);
@@ -178,9 +178,9 @@ const Home = () => {
                                 {products.slice(0, 4).map((p, idx) => {
                                     const imgUrl = p.images?.[0]?.image_url || p.image_url;
                                     return (
-                                        <div key={p.id} className={`bg-white p-4 rounded-2xl shadow-xl transform transition-all duration-500 hover:scale-105 ${idx % 2 === 0 ? 'translate-y-4 hover:translate-y-2' : '-translate-y-4 hover:-translate-y-2'}`}>
+                                        <div key={p._id || p.id} className={`bg-white p-4 rounded-2xl shadow-xl transform transition-all duration-500 hover:scale-105 ${idx % 2 === 0 ? 'translate-y-4 hover:translate-y-2' : '-translate-y-4 hover:-translate-y-2'}`}>
                                             {imgUrl ?
-                                                <img src={imgUrl.startsWith('http') ? imgUrl : `${API_URL}${imgUrl}`} className="w-full h-36 object-cover rounded-xl mb-3 shadow-md" alt={p.name} />
+                                                <img src={imgUrl.startsWith('http') ? imgUrl : `${imageBaseUrl}${imgUrl}`} className="w-full h-36 object-cover rounded-xl mb-3 shadow-md" alt={p.name} />
                                                 : <div className="w-full h-36 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl mb-3"></div>
                                             }
                                             <div className="h-3 w-24 bg-gray-200 rounded-full mb-2"></div>
@@ -211,7 +211,7 @@ const Home = () => {
                             <FaTags className={`text-3xl mb-3 transition-transform group-hover:scale-110 ${!filters.category ? 'animate-bounce' : ''}`} />
                             <span className="font-bold">All</span>
                         </button>
-                        {Array.isArray(categories) && categories.map((cat, idx) => (
+                        {categories.map((cat, idx) => (
                             <button
                                 key={idx}
                                 onClick={() => handleFilterChange('category', cat)}
@@ -241,13 +241,13 @@ const Home = () => {
                         </button>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                        {Array.isArray(featuredShops) && featuredShops.map(shop => (
-                            <a href={`/shop/${shop.id}`} key={shop.id} className="group block bg-gradient-to-br from-gray-50 to-white hover:from-primary-50 hover:to-secondary-50 border-2 border-gray-100 hover:border-primary-300 rounded-3xl p-6 transition-all duration-500 hover:shadow-xl text-center transform hover:-translate-y-2">
+                        {featuredShops.map(shop => (
+                            <Link to={`/shop/${shop.id || shop._id}`} key={shop.id || shop._id} className="group block bg-gradient-to-br from-gray-50 to-white hover:from-primary-50 hover:to-secondary-50 border-2 border-gray-100 hover:border-primary-300 rounded-3xl p-6 transition-all duration-500 hover:shadow-xl text-center transform hover:-translate-y-2">
                                 <div className="w-24 h-24 mx-auto mb-4 relative">
                                     <img
-                                        src={shop.logo_url ? (shop.logo_url.startsWith('http') ? shop.logo_url : `${API_URL}${shop.logo_url}`) : 'https://placehold.co/150'}
+                                        src={shop.logo_url ? (shop.logo_url.startsWith('http') ? shop.logo_url : `${imageBaseUrl}${shop.logo_url}`) : 'https://via.placeholder.com/150'}
                                         className="w-full h-full rounded-full object-cover border-4 border-white shadow-xl group-hover:scale-110 group-hover:shadow-2xl transition-all duration-500"
-                                        onError={(e) => e.target.src = 'https://placehold.co/150'}
+                                        onError={(e) => e.target.src = 'https://via.placeholder.com/150'}
                                     />
                                     <div className="absolute bottom-0 right-0 bg-green-500 w-6 h-6 rounded-full border-4 border-white shadow-lg"></div>
                                 </div>
@@ -259,15 +259,11 @@ const Home = () => {
                                 <span className="inline-block bg-gradient-to-r from-primary-600 to-secondary-600 text-white text-sm font-bold px-4 py-2 rounded-full shadow-md group-hover:shadow-glow transition-all">
                                     Visit Shop
                                 </span>
-                            </a>
+                            </Link>
                         ))}
                     </div>
                 </section>
             )}
-
-
-
-
 
             {/* MAIN PRODUCTS GRID */}
             <section id="products-section" className="scroll-mt-24 animate-slide-up">
@@ -286,8 +282,8 @@ const Home = () => {
 
                 {filteredProducts.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {Array.isArray(filteredProducts) && filteredProducts.map((product, index) => (
-                            <div key={product.id} className="transform hover:-translate-y-1 transition-transform duration-300">
+                        {filteredProducts.map((product, index) => (
+                            <div key={product.id || product._id} className="transform hover:-translate-y-1 transition-transform duration-300">
                                 <ProductCard product={product} />
                             </div>
                         ))}

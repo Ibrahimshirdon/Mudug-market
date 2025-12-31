@@ -1,46 +1,62 @@
-const db = require('../config/db');
+const mongoose = require('mongoose');
 
-class Order {
-    static async create(data) {
-        const { user_id, shop_id, total_amount, payment_method, payment_status, status, shipping_address, phone } = data;
-        const [result] = await db.execute(
-            'INSERT INTO orders (user_id, shop_id, total_amount, payment_method, payment_status, status, shipping_address, phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [user_id, shop_id, total_amount, payment_method, payment_status, status || 'pending', JSON.stringify(shipping_address), phone]
-        );
-        return result.insertId;
+const orderItemSchema = new mongoose.Schema({
+    product_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true
+    },
+    quantity: {
+        type: Number,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    name: String,
+    image_url: String
+});
+
+const orderSchema = new mongoose.Schema({
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    shop_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Shop',
+        required: true
+    },
+    items: [orderItemSchema],
+    total_amount: {
+        type: Number,
+        required: true
+    },
+    payment_method: {
+        type: String,
+        default: 'cod'
+    },
+    payment_status: {
+        type: String,
+        enum: ['pending', 'paid', 'failed'],
+        default: 'pending'
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'processing', 'shipped', 'delivered', 'completed', 'cancelled'],
+        default: 'pending'
+    },
+    shipping_address: {
+        type: Object,
+        required: true
+    },
+    phone: String,
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
+});
 
-    static async findById(id) {
-        const [rows] = await db.execute('SELECT * FROM orders WHERE id = ?', [id]);
-        return rows[0];
-    }
-
-    static async findByUserId(userId) {
-        const [rows] = await db.execute(`
-            SELECT O.*, S.name as shop_name 
-            FROM orders O
-            LEFT JOIN shops S ON O.shop_id = S.id
-            WHERE O.user_id = ?
-            ORDER BY O.created_at DESC
-        `, [userId]);
-        return rows;
-    }
-
-    static async findByShopId(shopId) {
-        const [rows] = await db.execute(`
-            SELECT O.*, U.name as customer_name, U.email as customer_email
-            FROM orders O
-            LEFT JOIN users U ON O.user_id = U.id
-            WHERE O.shop_id = ?
-            ORDER BY O.created_at DESC
-        `, [shopId]);
-        return rows;
-    }
-
-    static async updateStatus(id, status) {
-        await db.execute('UPDATE orders SET status = ? WHERE id = ?', [status, id]);
-        return this.findById(id);
-    }
-}
-
-module.exports = Order;
+module.exports = mongoose.model('Order', orderSchema);

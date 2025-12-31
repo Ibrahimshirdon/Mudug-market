@@ -2,7 +2,6 @@ import { useState, useContext } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 import ErrorMessage from '../components/ErrorMessage';
-import toast from 'react-hot-toast';
 import { FaEnvelope, FaLock, FaSpinner, FaUser } from 'react-icons/fa';
 
 const Login = () => {
@@ -29,13 +28,7 @@ const Login = () => {
                 navigate('/');
             }
         } catch (error) {
-            console.error('Login error:', error);
-            if (error.response?.data?.isUnverified) {
-                toast.error('Account not verified. Redirecting...');
-                navigate(`/verify-otp?email=${encodeURIComponent(error.response.data.email)}`);
-            } else {
-                setError(error.response?.data?.message || 'Invalid email/username or password. Please try again.');
-            }
+            setError('Invalid email/username or password. Please try again.');
         } finally {
             setLoading(false);
         }
