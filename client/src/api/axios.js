@@ -18,4 +18,6 @@ api.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 
+export const imageBaseUrl = import.meta.env.VITE_IMAGE_BASE_URL || 'http://localhost:5000';
+
 export default api;
