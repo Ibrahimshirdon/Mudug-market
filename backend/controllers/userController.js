@@ -12,10 +12,10 @@ exports.updateProfile = async (req, res) => {
 
         // Check if file was uploaded
         if (req.file) {
-            // Construct full URL (assuming localhost for now, change for prod)
-            const protocol = req.protocol;
-            const host = req.get('host');
-            user.profilePicture = `${protocol}://${host}/uploads/${req.file.filename}`;
+            // Convert buffer to Base64
+            const b64 = Buffer.from(req.file.buffer).toString('base64');
+            const mimeType = req.file.mimetype;
+            user.profilePicture = `data:${mimeType};base64,${b64}`;
         } else if (req.body.profilePicture) {
             // Fallback to URL string if provied manually (though UI will use file)
             user.profilePicture = req.body.profilePicture;
