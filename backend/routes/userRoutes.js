@@ -5,21 +5,12 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
 
-// Multer Config
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        // Ensure this directory exists or create it.
-        // For simplicity, we assume 'uploads' folder exists in root. 
-        // In production, use fs.mkdirSync or similar to ensure it exists.
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    }
-});
+// Multer Config (Memory Storage for Base64)
+const storage = multer.memoryStorage();
 
 const upload = multer({
     storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // Limit to 5MB
     fileFilter: (req, file, cb) => {
         const filetypes = /jpeg|jpg|png|gif/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
