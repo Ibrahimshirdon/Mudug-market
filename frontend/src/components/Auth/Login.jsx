@@ -13,6 +13,8 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        alert(`Debug: Attempting login to: ${API_URL}/auth/login`);
+        console.log('Attemping login to:', `${API_URL}/auth/login`);
         try {
             const response = await fetch(`${API_URL}/auth/login`, {
                 method: 'POST',
