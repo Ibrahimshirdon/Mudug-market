@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
-    console.log('Connected to MongoDB');
+    console.log(`Connected to MongoDB: ${mongoose.connection.host}`);
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
